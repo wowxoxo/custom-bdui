@@ -14,6 +14,7 @@
 		84C26B402C1631B50091140F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84C26B3F2C1631B50091140F /* Assets.xcassets */; };
 		84C26B432C1631B50091140F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84C26B412C1631B50091140F /* LaunchScreen.storyboard */; };
 		84C26B682C1635600091140F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84C26B672C1635600091140F /* UIKit.framework */; };
+		84C26B6E2C1638BC0091140F /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C26B6D2C1638BC0091140F /* IntroViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		84C26B422C1631B50091140F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		84C26B442C1631B60091140F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		84C26B672C1635600091140F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		84C26B6D2C1638BC0091140F /* IntroViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +62,10 @@
 		84C26B352C1631AE0091140F /* CoolApp */ = {
 			isa = PBXGroup;
 			children = (
+				84C26B6C2C1637C30091140F /* Networking */,
+				84C26B6B2C1637B30091140F /* Models */,
+				84C26B6A2C1637A90091140F /* Views */,
+				84C26B692C16379A0091140F /* ViewControllers */,
 				84C26B362C1631AE0091140F /* AppDelegate.swift */,
 				84C26B382C1631AE0091140F /* SceneDelegate.swift */,
 				84C26B3A2C1631AE0091140F /* ViewController.swift */,
@@ -77,6 +83,35 @@
 				84C26B672C1635600091140F /* UIKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		84C26B692C16379A0091140F /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				84C26B6D2C1638BC0091140F /* IntroViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		84C26B6A2C1637A90091140F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		84C26B6B2C1637B30091140F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		84C26B6C2C1637C30091140F /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Networking;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -153,6 +188,7 @@
 				84C26B3B2C1631AE0091140F /* ViewController.swift in Sources */,
 				84C26B372C1631AE0091140F /* AppDelegate.swift in Sources */,
 				84C26B392C1631AE0091140F /* SceneDelegate.swift in Sources */,
+				84C26B6E2C1638BC0091140F /* IntroViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
