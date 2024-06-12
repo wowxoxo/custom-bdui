@@ -43,6 +43,13 @@ class JSONParser {
     func parse(json: Data) throws -> Component {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return try decoder.decode(Component.self, from: json)
+                do {
+                    let component = try decoder.decode(Component.self, from: json)
+                    print("JSON parsed successfully: \(component)")
+                    return component
+                } catch {
+                    print("Failed to parse JSON: \(error)")
+                    throw error
+                }
     }
 }

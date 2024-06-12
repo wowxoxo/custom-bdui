@@ -16,6 +16,7 @@
 		843E515E2C1A01E200D2478C /* TextNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843E515D2C1A01E200D2478C /* TextNode.swift */; };
 		843E51602C1A020600D2478C /* ImageNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843E515F2C1A020600D2478C /* ImageNode.swift */; };
 		843E51622C1A023300D2478C /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843E51612C1A023300D2478C /* UIColorExtension.swift */; };
+		843E51632C1A11A100D2478C /* points.json in Resources */ = {isa = PBXBuildFile; fileRef = 843E51532C19BB9500D2478C /* points.json */; };
 		84C26B372C1631AE0091140F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C26B362C1631AE0091140F /* AppDelegate.swift */; };
 		84C26B392C1631AE0091140F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C26B382C1631AE0091140F /* SceneDelegate.swift */; };
 		84C26B3B2C1631AE0091140F /* AvailableServicesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C26B3A2C1631AE0091140F /* AvailableServicesViewController.swift */; };
@@ -212,6 +213,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				843E51632C1A11A100D2478C /* points.json in Resources */,
 				84C26B432C1631B50091140F /* LaunchScreen.storyboard in Resources */,
 				84C26B402C1631B50091140F /* Assets.xcassets in Resources */,
 				84C26B3E2C1631AE0091140F /* Main.storyboard in Resources */,

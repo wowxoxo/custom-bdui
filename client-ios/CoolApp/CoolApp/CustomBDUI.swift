@@ -8,13 +8,13 @@ class CustomBDUI {
             let serverDrivenView = ServerDrivenView()
             serverDrivenView.render(component: component, in: containerView)
         } catch {
-            showError(in: containerView)
+            showError(in: containerView, error: error)
         }
     }
 
     func loadFromNetwork(urlString: String, method: String = "GET", requestData: Data? = nil, in containerView: UIView) {
             guard let url = URL(string: urlString) else {
-                showError(in: containerView)
+                showError(in: containerView, error: nil)
                 return
             }
 
@@ -29,24 +29,27 @@ class CustomBDUI {
                     if let data = data {
                         self.loadLocalData(jsonData: data, in: containerView)
                     } else {
-                        self.showError(in: containerView)
+                        self.showError(in: containerView, error: error)
                     }
                 }
             }
             task.resume()
         }
 
-    private func showError(in containerView: UIView) {
+    private func showError(in containerView: UIView, error: Error?) {
         let label = UILabel()
-        label.text = "An error occurred."
+        label.text = "An error occurred: \(error?.localizedDescription ?? "Unknown error")"
         label.textColor = .red
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(label)
-        
+
         NSLayoutConstraint.activate([
             label.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
             label.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
         ])
+        if let error = error {
+            print("Error: \(error.localizedDescription)")
+        }
     }
 }

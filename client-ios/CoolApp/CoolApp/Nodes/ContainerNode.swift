@@ -2,7 +2,7 @@ import UIKit
 
 class ContainerNode {
     func render(component: Component, in parentView: UIView, using nodeRenderer: NodeRenderer) {
-        let containerView = createContainerView(properties: component.properties)
+        let containerView = ContainerNode.createContainerView(properties: component.properties)
         containerView.translatesAutoresizingMaskIntoConstraints = false
         parentView.addSubview(containerView)
         component.children?.forEach { child in
@@ -16,7 +16,7 @@ class ContainerNode {
         ])
     }
 
-    private func createContainerView(properties: [String: Any]) -> UIStackView {
+    static func createContainerView(properties: [String: Any]) -> UIStackView {
         let containerView = UIStackView()
         if let orientation = properties["orientation"] as? String {
             containerView.axis = orientation == "vertical" ? .vertical : .horizontal
