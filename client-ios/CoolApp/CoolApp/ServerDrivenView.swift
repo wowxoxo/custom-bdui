@@ -1,9 +1,9 @@
 import UIKit
 
 class ServerDrivenView {
-    let renderNode = NodeRenderer()
+    let nodeRenderer = NodeRenderer()
 
     func render(component: Component, in containerView: UIView) {
-        renderNode.render(component: component, in: containerView)
+        nodeRenderer.render(component: component, in: containerView)
     }
 }
