@@ -1,5 +1,5 @@
 //
-//  PointsViewController.swift
+//  CustomBDUIPointDetailViewController.swift
 //  CoolApp
 //
 //  Created by admin on 12.06.2024.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PointsViewController: UIViewController {
+class CustomBDUIPointDetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()

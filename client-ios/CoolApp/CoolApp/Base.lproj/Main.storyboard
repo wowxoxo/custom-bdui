@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="C6H-Ak-vSS">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -50,10 +50,10 @@
             </objects>
             <point key="canvasLocation" x="959.5419847328244" y="-27.464788732394368"/>
         </scene>
-        <!--Points View Controller-->
+        <!--CustomBDUI Points View Controller-->
         <scene sceneID="8S1-dl-MqK">
             <objects>
-                <viewController storyboardIdentifier="custom_bdui_points_view_controller" id="XWd-hj-0it" customClass="PointsViewController" customModule="CoolApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="custom_bdui_points_view_controller" id="XWd-hj-0it" customClass="CustomBDUIPointsViewController" customModule="CoolApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="S5H-9G-bjL">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -74,10 +74,10 @@
             </objects>
             <point key="canvasLocation" x="3652.6717557251909" y="-27.464788732394368"/>
         </scene>
-        <!--View Controller-->
+        <!--CustomBDUI Point Detail View Controller-->
         <scene sceneID="CbB-cO-JFs">
             <objects>
-                <viewController storyboardIdentifier="custom_bdui_point_detail_view_controller" id="Ml1-X2-U7U" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="custom_bdui_point_detail_view_controller" id="Ml1-X2-U7U" customClass="CustomBDUIPointDetailViewController" customModule="CoolApp" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="kdj-yg-nkc">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
