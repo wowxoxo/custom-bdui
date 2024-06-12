@@ -4,37 +4,39 @@ class CustomBDUI {
     func loadLocalData(jsonData: Data, in containerView: UIView) {
         let parser = JSONParser()
         do {
-            let component = try parser.parse(json: jsonData)
+            let components = try parser.parse(json: jsonData)
             let serverDrivenView = ServerDrivenView()
-            serverDrivenView.render(component: component, in: containerView)
+            for component in components {
+                serverDrivenView.render(component: component, in: containerView)
+            }
         } catch {
             showError(in: containerView, error: error)
         }
     }
 
     func loadFromNetwork(urlString: String, method: String = "GET", requestData: Data? = nil, in containerView: UIView) {
-            guard let url = URL(string: urlString) else {
-                showError(in: containerView, error: nil)
-                return
-            }
+        guard let url = URL(string: urlString) else {
+            showError(in: containerView, error: nil)
+            return
+        }
 
-            var request = URLRequest(url: url)
-            request.httpMethod = method
-            if let data = requestData {
-                request.httpBody = data
-            }
+        var request = URLRequest(url: url)
+        request.httpMethod = method
+        if let data = requestData {
+            request.httpBody = data
+        }
 
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                DispatchQueue.main.async {
-                    if let data = data {
-                        self.loadLocalData(jsonData: data, in: containerView)
-                    } else {
-                        self.showError(in: containerView, error: error)
-                    }
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            DispatchQueue.main.async {
+                if let data = data {
+                    self.loadLocalData(jsonData: data, in: containerView)
+                } else {
+                    self.showError(in: containerView, error: error)
                 }
             }
-            task.resume()
         }
+        task.resume()
+    }
 
     private func showError(in containerView: UIView, error: Error?) {
         let label = UILabel()

@@ -18,7 +18,7 @@ class CustomBDUIPointsViewController: UIViewController {
 //            containerView.translatesAutoresizingMaskIntoConstraints = false
 //            view.addSubview(containerView)
             print(containerView)
-            
+            testJSONParsing()
 //            NSLayoutConstraint.activate([
 //                containerView.topAnchor.constraint(equalTo: view.topAnchor),
 //                containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -34,24 +34,26 @@ class CustomBDUIPointsViewController: UIViewController {
 //                customBDUI.loadLocalData(jsonData: localJsonData, in: containerView)
 //            }
             
-            if let localJsonPath = Bundle.main.path(forResource: "points", ofType: "json") {
-                        print("JSON file path: \(localJsonPath)")
-                        if let localJsonData = try? Data(contentsOf: URL(fileURLWithPath: localJsonPath)) {
-                            print("JSON file loaded successfully.")
-                            if let jsonString = String(data: localJsonData, encoding: .utf8) {
-                                print("JSON content: \(jsonString)")
-                            }
-                            customBDUI.loadLocalData(jsonData: localJsonData, in: containerView)
-                        } else {
-                            print("Failed to convert JSON file to Data.")
-                        }
-                    } else {
-                        print("Failed to find JSON file path.")
-                    }
+//            if let localJsonPath = Bundle.main.path(forResource: "points", ofType: "json") {
+//                        print("JSON file path: \(localJsonPath)")
+//                        if let localJsonData = try? Data(contentsOf: URL(fileURLWithPath: localJsonPath)) {
+//                            print("JSON file loaded successfully.")
+//                            if let jsonString = String(data: localJsonData, encoding: .utf8) {
+//                                print("JSON content: \(jsonString)")
+//                            }
+//                            customBDUI.loadLocalData(jsonData: localJsonData, in: containerView)
+//                        } else {
+//                            print("Failed to convert JSON file to Data.")
+//                        }
+//                    } else {
+//                        print("Failed to find JSON file path.")
+//                    }
             
             // Example usage with network URL
             // customBDUI.loadFromNetwork(urlString: "https://example.com/data.json", in: containerView)
         }
+    
+    
     
     private func addTestButton() {
             let button = UIButton(type: .system)

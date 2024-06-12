@@ -17,6 +17,11 @@
 		843E51602C1A020600D2478C /* ImageNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843E515F2C1A020600D2478C /* ImageNode.swift */; };
 		843E51622C1A023300D2478C /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843E51612C1A023300D2478C /* UIColorExtension.swift */; };
 		843E51632C1A11A100D2478C /* points.json in Resources */ = {isa = PBXBuildFile; fileRef = 843E51532C19BB9500D2478C /* points.json */; };
+		843E51652C1A140900D2478C /* ComponentDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843E51642C1A140900D2478C /* ComponentDecoder.swift */; };
+		843E51672C1A14B300D2478C /* AnyDecodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843E51662C1A14B300D2478C /* AnyDecodable.swift */; };
+		843E51692C1A159700D2478C /* TestJSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843E51682C1A159700D2478C /* TestJSONParser.swift */; };
+		843E516B2C1A17B700D2478C /* ScreenStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843E516A2C1A17B700D2478C /* ScreenStruct.swift */; };
+		843E516D2C1A194400D2478C /* TopLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843E516C2C1A194400D2478C /* TopLevel.swift */; };
 		84C26B372C1631AE0091140F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C26B362C1631AE0091140F /* AppDelegate.swift */; };
 		84C26B392C1631AE0091140F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C26B382C1631AE0091140F /* SceneDelegate.swift */; };
 		84C26B3B2C1631AE0091140F /* AvailableServicesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C26B3A2C1631AE0091140F /* AvailableServicesViewController.swift */; };
@@ -39,6 +44,11 @@
 		843E515D2C1A01E200D2478C /* TextNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextNode.swift; sourceTree = "<group>"; };
 		843E515F2C1A020600D2478C /* ImageNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageNode.swift; sourceTree = "<group>"; };
 		843E51612C1A023300D2478C /* UIColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
+		843E51642C1A140900D2478C /* ComponentDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentDecoder.swift; sourceTree = "<group>"; };
+		843E51662C1A14B300D2478C /* AnyDecodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyDecodable.swift; sourceTree = "<group>"; };
+		843E51682C1A159700D2478C /* TestJSONParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestJSONParser.swift; sourceTree = "<group>"; };
+		843E516A2C1A17B700D2478C /* ScreenStruct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenStruct.swift; sourceTree = "<group>"; };
+		843E516C2C1A194400D2478C /* TopLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopLevel.swift; sourceTree = "<group>"; };
 		84C26B332C1631AE0091140F /* CoolApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoolApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		84C26B362C1631AE0091140F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		84C26B382C1631AE0091140F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -112,6 +122,11 @@
 				843E51532C19BB9500D2478C /* points.json */,
 				843E51562C19BDD000D2478C /* ServerDrivenView.swift */,
 				843E51582C19C23500D2478C /* NodeRenderer.swift */,
+				843E51642C1A140900D2478C /* ComponentDecoder.swift */,
+				843E51662C1A14B300D2478C /* AnyDecodable.swift */,
+				843E51682C1A159700D2478C /* TestJSONParser.swift */,
+				843E516A2C1A17B700D2478C /* ScreenStruct.swift */,
+				843E516C2C1A194400D2478C /* TopLevel.swift */,
 			);
 			path = CoolApp;
 			sourceTree = "<group>";
@@ -230,16 +245,21 @@
 				843E515E2C1A01E200D2478C /* TextNode.swift in Sources */,
 				843E51622C1A023300D2478C /* UIColorExtension.swift in Sources */,
 				84C26B702C19833E0091140F /* CustomBDUIPointsViewController.swift in Sources */,
+				843E51652C1A140900D2478C /* ComponentDecoder.swift in Sources */,
+				843E516B2C1A17B700D2478C /* ScreenStruct.swift in Sources */,
+				843E516D2C1A194400D2478C /* TopLevel.swift in Sources */,
 				84C26B3B2C1631AE0091140F /* AvailableServicesViewController.swift in Sources */,
 				843E51522C19B56500D2478C /* JSONParser.swift in Sources */,
 				84C26B372C1631AE0091140F /* AppDelegate.swift in Sources */,
 				843E51592C19C23500D2478C /* NodeRenderer.swift in Sources */,
+				843E51672C1A14B300D2478C /* AnyDecodable.swift in Sources */,
 				84C26B392C1631AE0091140F /* SceneDelegate.swift in Sources */,
 				843E515C2C1A007400D2478C /* ContainerNode.swift in Sources */,
 				84C26B6E2C1638BC0091140F /* IntroViewController.swift in Sources */,
 				843E51602C1A020600D2478C /* ImageNode.swift in Sources */,
 				840490352C198F72009DD628 /* CustomBDUIPointDetailViewController.swift in Sources */,
 				843E51502C19B52300D2478C /* CustomBDUI.swift in Sources */,
+				843E51692C1A159700D2478C /* TestJSONParser.swift in Sources */,
 				843E51572C19BDD000D2478C /* ServerDrivenView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
