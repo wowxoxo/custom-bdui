@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		840490352C198F72009DD628 /* CustomBDUIPointDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840490342C198F72009DD628 /* CustomBDUIPointDetailViewController.swift */; };
+		843E51502C19B52300D2478C /* CustomBDUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843E514F2C19B52300D2478C /* CustomBDUI.swift */; };
+		843E51522C19B56500D2478C /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843E51512C19B56500D2478C /* JSONParser.swift */; };
+		843E51572C19BDD000D2478C /* ServerDrivenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843E51562C19BDD000D2478C /* ServerDrivenView.swift */; };
+		843E51592C19C23500D2478C /* NodeRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843E51582C19C23500D2478C /* NodeRenderer.swift */; };
 		84C26B372C1631AE0091140F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C26B362C1631AE0091140F /* AppDelegate.swift */; };
 		84C26B392C1631AE0091140F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C26B382C1631AE0091140F /* SceneDelegate.swift */; };
 		84C26B3B2C1631AE0091140F /* AvailableServicesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C26B3A2C1631AE0091140F /* AvailableServicesViewController.swift */; };
@@ -21,6 +25,11 @@
 
 /* Begin PBXFileReference section */
 		840490342C198F72009DD628 /* CustomBDUIPointDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBDUIPointDetailViewController.swift; sourceTree = "<group>"; };
+		843E514F2C19B52300D2478C /* CustomBDUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBDUI.swift; sourceTree = "<group>"; };
+		843E51512C19B56500D2478C /* JSONParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
+		843E51532C19BB9500D2478C /* points.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = points.json; sourceTree = "<group>"; };
+		843E51562C19BDD000D2478C /* ServerDrivenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerDrivenView.swift; sourceTree = "<group>"; };
+		843E51582C19C23500D2478C /* NodeRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeRenderer.swift; sourceTree = "<group>"; };
 		84C26B332C1631AE0091140F /* CoolApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoolApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		84C26B362C1631AE0091140F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		84C26B382C1631AE0091140F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -77,6 +86,11 @@
 				84C26B3F2C1631B50091140F /* Assets.xcassets */,
 				84C26B412C1631B50091140F /* LaunchScreen.storyboard */,
 				84C26B442C1631B60091140F /* Info.plist */,
+				843E514F2C19B52300D2478C /* CustomBDUI.swift */,
+				843E51512C19B56500D2478C /* JSONParser.swift */,
+				843E51532C19BB9500D2478C /* points.json */,
+				843E51562C19BDD000D2478C /* ServerDrivenView.swift */,
+				843E51582C19C23500D2478C /* NodeRenderer.swift */,
 			);
 			path = CoolApp;
 			sourceTree = "<group>";
@@ -193,10 +207,14 @@
 			files = (
 				84C26B702C19833E0091140F /* CustomBDUIPointsViewController.swift in Sources */,
 				84C26B3B2C1631AE0091140F /* AvailableServicesViewController.swift in Sources */,
+				843E51522C19B56500D2478C /* JSONParser.swift in Sources */,
 				84C26B372C1631AE0091140F /* AppDelegate.swift in Sources */,
+				843E51592C19C23500D2478C /* NodeRenderer.swift in Sources */,
 				84C26B392C1631AE0091140F /* SceneDelegate.swift in Sources */,
 				84C26B6E2C1638BC0091140F /* IntroViewController.swift in Sources */,
 				840490352C198F72009DD628 /* CustomBDUIPointDetailViewController.swift in Sources */,
+				843E51502C19B52300D2478C /* CustomBDUI.swift in Sources */,
+				843E51572C19BDD000D2478C /* ServerDrivenView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

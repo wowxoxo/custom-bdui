@@ -9,21 +9,30 @@ import UIKit
 
 class CustomBDUIPointsViewController: UIViewController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    var containerView: UIView!
 
-        // Do any additional setup after loading the view.
-    }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            containerView = UIView()
+            containerView.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(containerView)
+            
+            NSLayoutConstraint.activate([
+                containerView.topAnchor.constraint(equalTo: view.topAnchor),
+                containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                containerView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            ])
+            
+            let customBDUI = CustomBDUI()
+            // Example usage with local JSON
+            if let localJsonPath = Bundle.main.path(forResource: "points", ofType: "json"),
+               let localJsonData = try? Data(contentsOf: URL(fileURLWithPath: localJsonPath)) {
+                customBDUI.loadLocalData(jsonData: localJsonData, in: containerView)
+            }
+            
+            // Example usage with network URL
+            // customBDUI.loadFromNetwork(urlString: "https://example.com/data.json", in: containerView)
+        }
 
 }
