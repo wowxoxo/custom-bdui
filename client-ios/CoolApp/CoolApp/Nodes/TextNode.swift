@@ -8,8 +8,11 @@ class TextNode {
         
         print("TextNode: Rendering text: \(label.text ?? "")")
         NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: parentView.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: parentView.centerYAnchor)
+            label.leadingAnchor.constraint(equalTo: parentView.leadingAnchor),
+            label.trailingAnchor.constraint(equalTo: parentView.trailingAnchor),
+            label.topAnchor.constraint(equalTo: parentView.topAnchor),
+            // Optionally adjust the height constraint if needed
+            // label.heightAnchor.constraint(equalToConstant: 30)
         ])
     }
 
