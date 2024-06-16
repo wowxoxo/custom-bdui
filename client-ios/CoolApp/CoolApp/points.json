@@ -12,40 +12,58 @@
           {
             "type": "text",
             "properties": {
-              "text": "Centers",
+              "text": "Центры обслуживания",
               "font_size": 24,
               "color": "#000000",
               "alignment": "center"
             }
           },
           {
-            "type": "container",
-            "properties": {
-              "orientation": "horizontal",
-              "padding": 10,
-              "margin": {
-                "bottom": 10
-              }
-            },
-            "children": [
-              {
-                "type": "text",
-                "properties": {
-                  "text": "Office 1",
-                  "font_size": 18,
-                  "color": "#000000",
-                  "flex": 1
-                }
+              "type": "container",
+              "properties": {
+                "orientation": "vertical",
+                "padding": 10
               },
-              {
-                "type": "text",
-                "properties": {
-                  "text": "1.2 km",
-                  "font_size": 14,
-                  "color": "#888888"
-                }
-              }
-            ]
+              "children": [
+                  {
+                    "type": "text",
+                    "properties": {
+                      "text": "Инвестиционный Банк «ВЕСТА» (ООО)",
+                      "font_size": 48,
+                      "color": "#000000",
+                      "alignment": "left"
+                    }
+                  },
+                  {
+                    "type": "container",
+                    "properties": {
+                      "orientation": "horizontal",
+                      "padding": 10,
+                      "margin": {
+                        "bottom": 10
+                      }
+                    },
+                    "children": [
+                      {
+                        "type": "text",
+                        "properties": {
+                          "text": "119071, Москва регион, москва город, Ленинский пооспект улица. Тба пом. п 158",
+                          "font_size": 18,
+                          "color": "#000000",
+                          "flex": 1
+                        }
+                      },
+                      {
+                        "type": "text",
+                        "properties": {
+                          "text": "1.2 км",
+                          "font_size": 14,
+                          "color": "#888888"
+                        }
+                      }
+                    ]
+                  }
+              ]
           }
         ]
       }
