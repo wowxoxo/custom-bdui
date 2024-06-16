@@ -6,7 +6,10 @@
         "type": "container",
         "properties": {
           "orientation": "vertical",
-          "padding": 10
+          "paddingTop": 40,
+          "paddingLeft": 10,
+          "paddingBottom": 10,
+          "paddingRight": 10
         },
         "children": [
           {
@@ -22,7 +25,10 @@
             "type": "container",
             "properties": {
               "orientation": "vertical",
-              "padding": 10
+              "paddingTop": 10,
+              "paddingLeft": 10,
+              "paddingBottom": 10,
+              "paddingRight": 10
             },
             "children": [
               {
@@ -38,7 +44,10 @@
                 "type": "container",
                 "properties": {
                   "orientation": "horizontal",
-                  "padding": 10
+                  "paddingTop": 100,
+                  "paddingLeft": 10,
+                  "paddingBottom": 10,
+                  "paddingRight": 10
                 },
                 "children": [
                   {

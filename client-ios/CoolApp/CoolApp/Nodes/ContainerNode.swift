@@ -27,10 +27,21 @@ class ContainerNode {
         if let orientation = properties["orientation"] as? String {
             containerView.axis = orientation == "vertical" ? .vertical : .horizontal
         }
-        if let padding = properties["padding"] as? CGFloat {
-            containerView.layoutMargins = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
-            containerView.isLayoutMarginsRelativeArrangement = true
+        var top: CGFloat = 0, left: CGFloat = 0, bottom: CGFloat = 0, right: CGFloat = 0
+        if let paddingTop = properties["paddingTop"] as? CGFloat {
+            top = paddingTop
         }
+        if let paddingLeft = properties["paddingLeft"] as? CGFloat {
+            left = paddingLeft
+        }
+        if let paddingBottom = properties["paddingBottom"] as? CGFloat {
+            bottom = paddingBottom
+        }
+        if let paddingRight = properties["paddingRight"] as? CGFloat {
+            right = paddingRight
+        }
+        containerView.layoutMargins = UIEdgeInsets(top: top, left: left, bottom: bottom, right: right)
+        containerView.isLayoutMarginsRelativeArrangement = true
         containerView.distribution = .fill
         containerView.alignment = .fill
         return containerView
