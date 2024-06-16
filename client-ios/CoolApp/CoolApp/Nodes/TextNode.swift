@@ -23,8 +23,8 @@ class TextNode {
             print("createLabel: No text found in properties: \(properties)")
         }
         
-        if let fontSize = properties["font_size"] as? CGFloat {
-            label.font = label.font.withSize(fontSize)
+        if let fontSize = properties["font_size"] as? NSNumber {
+            label.font = label.font.withSize(CGFloat(truncating: fontSize))
             print("createLabel: Found fontSize: \(fontSize)")
         } else {
             print("createLabel: No fontSize found in properties")

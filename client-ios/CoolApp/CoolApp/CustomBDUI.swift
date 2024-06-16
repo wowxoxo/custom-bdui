@@ -1,7 +1,7 @@
 import UIKit
 
 class CustomBDUI {
-    func loadLocalData(jsonData: Data, in containerView: UIView) {
+    func testLoadLocalData(jsonData: Data, in containerView: UIView) {
             let parser = JSONParser()
             do {
                 // Use a simple hardcoded JSON for testing
@@ -15,7 +15,7 @@ class CustomBDUI {
                                 "properties": {
                                     "text": "Test Text",
                                     "font_size": 24,
-                                    "color": "#000000",
+                                    "color": "#ff0000",
                                     "alignment": "center"
                                 }
                             }
@@ -35,7 +35,7 @@ class CustomBDUI {
             }
         }
     
-    func loadLocalData0(jsonData: Data, in containerView: UIView) {
+    func loadLocalData(jsonData: Data, in containerView: UIView) {
         let parser = JSONParser()
         do {
             let components = try parser.parse(json: jsonData)

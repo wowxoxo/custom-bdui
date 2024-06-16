@@ -19,14 +19,13 @@
             }
           },
           {
-            "type": "tap-container",
+            "type": "container",
             "properties": {
               "orientation": "horizontal",
               "padding": 10,
               "margin": {
                 "bottom": 10
-              },
-              "deep_link": "https://example.com/office/1"
+              }
             },
             "children": [
               {

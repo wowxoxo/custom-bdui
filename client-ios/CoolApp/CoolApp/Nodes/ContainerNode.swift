@@ -9,12 +9,12 @@ class ContainerNode {
         component.children?.forEach { child in
             nodeRenderer.render(component: child, in: containerView)
         }
-//        NSLayoutConstraint.activate([
-//            containerView.topAnchor.constraint(equalTo: parentView.topAnchor),
-//            containerView.leadingAnchor.constraint(equalTo: parentView.leadingAnchor),
-//            containerView.trailingAnchor.constraint(equalTo: parentView.trailingAnchor),
-//            containerView.bottomAnchor.constraint(equalTo: parentView.bottomAnchor)
-//        ])
+        NSLayoutConstraint.activate([
+            containerView.topAnchor.constraint(equalTo: parentView.topAnchor),
+            containerView.leadingAnchor.constraint(equalTo: parentView.leadingAnchor),
+            containerView.trailingAnchor.constraint(equalTo: parentView.trailingAnchor),
+            containerView.bottomAnchor.constraint(equalTo: parentView.bottomAnchor)
+        ])
     }
 
     static func createContainerView(properties: [String: Any]) -> UIStackView {
