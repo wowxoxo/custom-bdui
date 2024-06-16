@@ -106,13 +106,10 @@
 			isa = PBXGroup;
 			children = (
 				843E515A2C1A005200D2478C /* Nodes */,
-				84C26B6C2C1637C30091140F /* Networking */,
 				84C26B6B2C1637B30091140F /* Models */,
-				84C26B6A2C1637A90091140F /* Views */,
 				84C26B692C16379A0091140F /* ViewControllers */,
 				84C26B362C1631AE0091140F /* AppDelegate.swift */,
 				84C26B382C1631AE0091140F /* SceneDelegate.swift */,
-				84C26B3A2C1631AE0091140F /* AvailableServicesViewController.swift */,
 				84C26B3C2C1631AE0091140F /* Main.storyboard */,
 				84C26B3F2C1631B50091140F /* Assets.xcassets */,
 				84C26B412C1631B50091140F /* LaunchScreen.storyboard */,
@@ -122,11 +119,7 @@
 				843E51532C19BB9500D2478C /* points.json */,
 				843E51562C19BDD000D2478C /* ServerDrivenView.swift */,
 				843E51582C19C23500D2478C /* NodeRenderer.swift */,
-				843E51642C1A140900D2478C /* ComponentDecoder.swift */,
-				843E51662C1A14B300D2478C /* AnyDecodable.swift */,
 				843E51682C1A159700D2478C /* TestJSONParser.swift */,
-				843E516A2C1A17B700D2478C /* ScreenStruct.swift */,
-				843E516C2C1A194400D2478C /* TopLevel.swift */,
 			);
 			path = CoolApp;
 			sourceTree = "<group>";
@@ -142,6 +135,7 @@
 		84C26B692C16379A0091140F /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				84C26B3A2C1631AE0091140F /* AvailableServicesViewController.swift */,
 				84C26B6D2C1638BC0091140F /* IntroViewController.swift */,
 				84C26B6F2C19833D0091140F /* CustomBDUIPointsViewController.swift */,
 				840490342C198F72009DD628 /* CustomBDUIPointDetailViewController.swift */,
@@ -149,25 +143,15 @@
 			path = ViewControllers;
 			sourceTree = "<group>";
 		};
-		84C26B6A2C1637A90091140F /* Views */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
 		84C26B6B2C1637B30091140F /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				843E516A2C1A17B700D2478C /* ScreenStruct.swift */,
+				843E51642C1A140900D2478C /* ComponentDecoder.swift */,
+				843E51662C1A14B300D2478C /* AnyDecodable.swift */,
+				843E516C2C1A194400D2478C /* TopLevel.swift */,
 			);
 			path = Models;
-			sourceTree = "<group>";
-		};
-		84C26B6C2C1637C30091140F /* Networking */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Networking;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
