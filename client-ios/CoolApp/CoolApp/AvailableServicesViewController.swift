@@ -14,6 +14,7 @@ class AvailableServicesViewController: UIViewController, UITableViewDataSource, 
 
         override func viewDidLoad() {
             super.viewDidLoad()
+            self.title = "Доступные услуги"
             tableView.dataSource = self
             tableView.delegate = self
             tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ServiceCell")

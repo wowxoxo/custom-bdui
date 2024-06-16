@@ -27,7 +27,14 @@ class ContainerNode {
         if let orientation = properties["orientation"] as? String {
             containerView.axis = orientation == "vertical" ? .vertical : .horizontal
         }
+
         var top: CGFloat = 0, left: CGFloat = 0, bottom: CGFloat = 0, right: CGFloat = 0
+        if let padding = properties["padding"] as? CGFloat {
+            top = padding
+            left = padding
+            bottom = padding
+            right = padding
+        }
         if let paddingTop = properties["paddingTop"] as? CGFloat {
             top = paddingTop
         }

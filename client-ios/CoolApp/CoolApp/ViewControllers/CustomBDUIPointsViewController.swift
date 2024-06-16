@@ -49,8 +49,9 @@ class CustomBDUIPointsViewController: UIViewController {
 //                        print("Failed to find JSON file path.")
 //                    }
             
-            // Example usage with network URL
-             customBDUI.loadFromNetwork(urlString: "http://127.0.0.1:3130/dev/bdui-custom/points/", in: containerView)
+            // usage with network URL
+            self.title = "Получение услуги"
+             customBDUI.loadFromNetwork(urlString: "http://127.0.0.1:3130/dev/bdui-custom/points/1", in: containerView)
         }
     
     
