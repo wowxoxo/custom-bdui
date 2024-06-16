@@ -21,6 +21,7 @@ class TextNode {
 
     private func createLabel(properties: [String: Any]) -> UILabel {
         let label = UILabel()
+        label.numberOfLines = 0  // Enable multiline
         
         if let text = properties["text"] as? String {
             label.text = text
@@ -29,8 +30,8 @@ class TextNode {
             print("createLabel: No text found in properties: \(properties)")
         }
         
-        if let fontSize = properties["font_size"] as? NSNumber {
-            label.font = label.font.withSize(CGFloat(truncating: fontSize))
+        if let fontSize = properties["font_size"] as? CGFloat {
+            label.font = label.font.withSize(fontSize)
             print("createLabel: Found fontSize: \(fontSize)")
         } else {
             print("createLabel: No fontSize found in properties")

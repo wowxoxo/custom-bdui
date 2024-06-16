@@ -29,10 +29,8 @@ struct Component: Decodable {
         for key in container.allKeys {
             if let value = try? container.decode(String.self, forKey: key) {
                 properties[key.stringValue] = value
-            } else if let value = try? container.decode(Int.self, forKey: key) {
-                properties[key.stringValue] = value
             } else if let value = try? container.decode(Double.self, forKey: key) {
-                properties[key.stringValue] = value
+                properties[key.stringValue] = CGFloat(value)
             } else if let value = try? container.decode(Bool.self, forKey: key) {
                 properties[key.stringValue] = value
             }
