@@ -50,7 +50,7 @@ class CustomBDUIPointsViewController: UIViewController {
 //                    }
             
             // Example usage with network URL
-             customBDUI.loadFromNetwork(urlString: "http://127.0.0.1:3130/dev/bdui-custom/points1/", in: containerView)
+             customBDUI.loadFromNetwork(urlString: "http://127.0.0.1:3130/dev/bdui-custom/points/", in: containerView)
         }
     
     

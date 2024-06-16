@@ -1,40 +1,41 @@
 import UIKit
 
 class CustomBDUI {
+    private var originalRequestParams: (urlString: String, method: String, requestData: Data?, containerView: UIView)?
+
     func testLoadLocalData(jsonData: Data, in containerView: UIView) {
-            let parser = JSONParser()
-            do {
-                // Use a simple hardcoded JSON for testing
-                let simpleJsonString = """
-                {
-                    "screen": {
-                        "id": "test_screen",
-                        "components": [
-                            {
-                                "type": "text",
-                                "properties": {
-                                    "text": "Test Text",
-                                    "font_size": 24,
-                                    "color": "#ff0000",
-                                    "alignment": "center"
-                                }
+        let parser = JSONParser()
+        do {
+            let simpleJsonString = """
+            {
+                "screen": {
+                    "id": "test_screen",
+                    "components": [
+                        {
+                            "type": "text",
+                            "properties": {
+                                "text": "Test Text",
+                                "font_size": 24,
+                                "color": "#ff0000",
+                                "alignment": "center"
                             }
-                        ]
-                    }
+                        }
+                    ]
                 }
-                """
-                let simpleJsonData = simpleJsonString.data(using: .utf8)!
-                let components = try parser.parse(json: simpleJsonData)
-                
-                let serverDrivenView = ServerDrivenView()
-                for component in components {
-                    serverDrivenView.render(component: component, in: containerView)
-                }
-            } catch {
-                showError(in: containerView, error: error)
             }
+            """
+            let simpleJsonData = simpleJsonString.data(using: .utf8)!
+            let components = try parser.parse(json: simpleJsonData)
+            
+            let serverDrivenView = ServerDrivenView()
+            for component in components {
+                serverDrivenView.render(component: component, in: containerView)
+            }
+        } catch {
+            showError(in: containerView, error: error, urlString: "", method: "GET", requestData: nil)
         }
-    
+    }
+
     func loadLocalData(jsonData: Data, in containerView: UIView) {
         let parser = JSONParser()
         do {
@@ -44,15 +45,17 @@ class CustomBDUI {
                 serverDrivenView.render(component: component, in: containerView)
             }
         } catch {
-            showError(in: containerView, error: error)
+            showError(in: containerView, error: error, urlString: "", method: "GET", requestData: nil)
         }
     }
 
     func loadFromNetwork(urlString: String, method: String = "GET", requestData: Data? = nil, in containerView: UIView) {
         guard let url = URL(string: urlString) else {
-            showError(in: containerView, error: nil)
+            showError(in: containerView, error: nil, urlString: urlString, method: method, requestData: requestData)
             return
         }
+
+        showLoading(in: containerView)
 
         var request = URLRequest(url: url)
         request.httpMethod = method
@@ -62,48 +65,47 @@ class CustomBDUI {
 
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {
+                self.hideLoading(in: containerView)
                 if let data = data {
                     self.loadLocalData(jsonData: data, in: containerView)
                 } else {
-                    self.showError(in: containerView, error: error)
+                    self.showError(in: containerView, error: error, urlString: urlString, method: method, requestData: requestData)
                 }
             }
         }
         task.resume()
     }
 
-    private func showErrorDebug(in containerView: UIView, error: Error?) {
-        let label = UILabel()
-        label.text = "An error occurred: \(error?.localizedDescription ?? "Unknown error")"
-        label.textColor = .red
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 0  // Enable multiline
-        
-        containerView.addSubview(label)
+    private func showLoading(in containerView: UIView) {
+        let spinner = UIActivityIndicatorView(style: .large)
+        spinner.tag = 999 // Arbitrary number to identify the spinner later
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(spinner)
+        spinner.startAnimating()
 
         NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
-            label.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
-            label.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
+            spinner.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            spinner.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
         ])
-        
-        if let error = error {
-            print("Error: \(error.localizedDescription)")
+    }
+
+    private func hideLoading(in containerView: UIView) {
+        if let spinner = containerView.viewWithTag(999) as? UIActivityIndicatorView {
+            spinner.stopAnimating()
+            spinner.removeFromSuperview()
         }
     }
-    
-    private func showError(in containerView: UIView, error: Error?) {
-        // Remove existing subviews
+
+    private func showError(in containerView: UIView, error: Error?, urlString: String, method: String, requestData: Data?) {
+        self.originalRequestParams = (urlString: urlString, method: method, requestData: requestData, containerView: containerView)
+
         containerView.subviews.forEach { $0.removeFromSuperview() }
         
-        // Image view
         let imageView = UIImageView(image: UIImage(named: "error_cat"))
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(imageView)
         
-        // Title label
         let titleLabel = UILabel()
         titleLabel.text = "Что-то пошло не так"
         titleLabel.font = UIFont.boldSystemFont(ofSize: 20)
@@ -112,7 +114,6 @@ class CustomBDUI {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(titleLabel)
         
-        // Description label
         let descriptionLabel = UILabel()
         descriptionLabel.text = "Попробуйте снова или зайдите позже"
         descriptionLabel.textColor = .gray
@@ -121,7 +122,6 @@ class CustomBDUI {
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(descriptionLabel)
         
-        // Retry button
         let retryButton = UIButton(type: .system)
         retryButton.setTitle("Повторить", for: .normal)
         retryButton.setTitleColor(.blue, for: .normal)
@@ -129,7 +129,6 @@ class CustomBDUI {
         retryButton.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(retryButton)
         
-        // Layout constraints
         NSLayoutConstraint.activate([
             imageView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
             imageView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 40),
@@ -154,9 +153,8 @@ class CustomBDUI {
     }
 
     @objc private func retryButtonTapped() {
-        // Implement the retry action
-        print("Retry button tapped")
+        if let params = originalRequestParams {
+            loadFromNetwork(urlString: params.urlString, method: params.method, requestData: params.requestData, in: params.containerView)
+        }
     }
-
-
 }
