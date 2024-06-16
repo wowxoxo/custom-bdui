@@ -18,7 +18,8 @@
               "text": "Центры обслуживания",
               "font_size": 24,
               "color": "#000000",
-              "alignment": "center"
+              "alignment": "center",
+              "bold": true
             }
           },
           {

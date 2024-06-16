@@ -43,7 +43,11 @@ class TextNode {
         }
         
         if let fontSize = properties["fontSize"] as? CGFloat {
-            label.font = label.font.withSize(fontSize)
+            if let isBold = properties["bold"] as? Bool, isBold {
+                label.font = UIFont.boldSystemFont(ofSize: fontSize)
+            } else {
+                label.font = UIFont.systemFont(ofSize: fontSize)
+            }
         }
         
         if let color = properties["color"] as? String {
