@@ -6,6 +6,7 @@ class NodeRenderer {
     let imageNode = ImageNode()
 
     func render(component: Component, in parentView: UIView) {
+        print("NodeRenderer: Rendering component type: \(component.type)")
         switch component.type {
         case "container":
             containerNode.render(component: component, in: parentView, using: self)
@@ -14,7 +15,7 @@ class NodeRenderer {
         case "image":
             imageNode.render(component: component, in: parentView)
         default:
-            break
+            print("NodeRenderer: Unknown component type: \(component.type)")
         }
     }
 }

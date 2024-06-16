@@ -5,15 +5,16 @@ class ContainerNode {
         let containerView = ContainerNode.createContainerView(properties: component.properties)
         containerView.translatesAutoresizingMaskIntoConstraints = false
         parentView.addSubview(containerView)
+        print("Rendering container with children count: \(component.children?.count ?? 0)")
         component.children?.forEach { child in
             nodeRenderer.render(component: child, in: containerView)
         }
-        NSLayoutConstraint.activate([
-            containerView.topAnchor.constraint(equalTo: parentView.topAnchor),
-            containerView.leadingAnchor.constraint(equalTo: parentView.leadingAnchor),
-            containerView.trailingAnchor.constraint(equalTo: parentView.trailingAnchor),
-            containerView.bottomAnchor.constraint(equalTo: parentView.bottomAnchor)
-        ])
+//        NSLayoutConstraint.activate([
+//            containerView.topAnchor.constraint(equalTo: parentView.topAnchor),
+//            containerView.leadingAnchor.constraint(equalTo: parentView.leadingAnchor),
+//            containerView.trailingAnchor.constraint(equalTo: parentView.trailingAnchor),
+//            containerView.bottomAnchor.constraint(equalTo: parentView.bottomAnchor)
+//        ])
     }
 
     static func createContainerView(properties: [String: Any]) -> UIStackView {

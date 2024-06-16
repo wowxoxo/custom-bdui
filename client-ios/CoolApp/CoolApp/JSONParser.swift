@@ -6,7 +6,7 @@ class JSONParser {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         do {
             let topLevel = try decoder.decode(TopLevel.self, from: json)
-            print("JSON parsed successfully: \(topLevel.screen.components)")
+            print("JSON parsed successfully0: \(topLevel.screen.components)")
             return topLevel.screen.components
         } catch {
             print("Failed to parse JSON: \(error)")

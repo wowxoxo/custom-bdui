@@ -62,7 +62,7 @@ func testJSONParsing() {
     let parser = JSONParser()
     do {
         let components = try parser.parse(json: jsonData)
-        print("JSON parsed successfully: \(components)")
+        print("JSON parsed successfully1: \(components)")
     } catch {
         print("Failed to parse JSON: \(error)")
     }

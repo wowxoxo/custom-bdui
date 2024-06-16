@@ -2,6 +2,40 @@ import UIKit
 
 class CustomBDUI {
     func loadLocalData(jsonData: Data, in containerView: UIView) {
+            let parser = JSONParser()
+            do {
+                // Use a simple hardcoded JSON for testing
+                let simpleJsonString = """
+                {
+                    "screen": {
+                        "id": "test_screen",
+                        "components": [
+                            {
+                                "type": "text",
+                                "properties": {
+                                    "text": "Test Text",
+                                    "font_size": 24,
+                                    "color": "#000000",
+                                    "alignment": "center"
+                                }
+                            }
+                        ]
+                    }
+                }
+                """
+                let simpleJsonData = simpleJsonString.data(using: .utf8)!
+                let components = try parser.parse(json: simpleJsonData)
+                
+                let serverDrivenView = ServerDrivenView()
+                for component in components {
+                    serverDrivenView.render(component: component, in: containerView)
+                }
+            } catch {
+                showError(in: containerView, error: error)
+            }
+        }
+    
+    func loadLocalData0(jsonData: Data, in containerView: UIView) {
         let parser = JSONParser()
         do {
             let components = try parser.parse(json: jsonData)

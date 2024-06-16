@@ -15,20 +15,42 @@ struct Component: Decodable {
         print("Decoded type: \(type)")
         children = try container.decodeIfPresent([Component].self, forKey: .children)
         
-        let propertiesContainer = try container.nestedContainer(keyedBy: CodingKeys.self, forKey: .properties)
-        properties = try Component.decodeProperties(container: propertiesContainer)
+        if let propertiesContainer = try? container.nestedContainer(keyedBy: DynamicCodingKeys.self, forKey: .properties) {
+            properties = try Component.decodeProperties(container: propertiesContainer)
+        } else {
+            properties = [:]
+        }
         print("Decoded properties: \(properties)")
     }
     
-    private static func decodeProperties(container: KeyedDecodingContainer<CodingKeys>) throws -> [String: Any] {
+    private static func decodeProperties(container: KeyedDecodingContainer<DynamicCodingKeys>) throws -> [String: Any] {
         var properties: [String: Any] = [:]
         
         for key in container.allKeys {
-            if let value = try? container.decode(AnyDecodable.self, forKey: key) {
-                properties[key.stringValue] = value.value
+            if let value = try? container.decode(String.self, forKey: key) {
+                properties[key.stringValue] = value
+            } else if let value = try? container.decode(Int.self, forKey: key) {
+                properties[key.stringValue] = value
+            } else if let value = try? container.decode(Double.self, forKey: key) {
+                properties[key.stringValue] = value
+            } else if let value = try? container.decode(Bool.self, forKey: key) {
+                properties[key.stringValue] = value
             }
         }
         print("Decoded properties: \(properties)")
         return properties
+    }
+}
+
+struct DynamicCodingKeys: CodingKey {
+    var stringValue: String
+    init?(stringValue: String) {
+        self.stringValue = stringValue
+    }
+    
+    var intValue: Int?
+    init?(intValue: Int) {
+        self.intValue = intValue
+        self.stringValue = "\(intValue)"
     }
 }
