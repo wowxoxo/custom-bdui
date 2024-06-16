@@ -4,16 +4,19 @@ class TextNode {
     func render(component: Component, in parentView: UIView) {
         let label = createLabel(properties: component.properties)
         label.translatesAutoresizingMaskIntoConstraints = false
-        parentView.addSubview(label)
+        
+        if let stackView = parentView as? UIStackView {
+            stackView.addArrangedSubview(label)
+        } else {
+            parentView.addSubview(label)
+            NSLayoutConstraint.activate([
+                label.leadingAnchor.constraint(equalTo: parentView.leadingAnchor, constant: 10),
+                label.trailingAnchor.constraint(equalTo: parentView.trailingAnchor, constant: -10),
+                label.topAnchor.constraint(equalTo: parentView.topAnchor, constant: 10)
+            ])
+        }
         
         print("TextNode: Rendering text: \(label.text ?? "")")
-        NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: parentView.leadingAnchor),
-            label.trailingAnchor.constraint(equalTo: parentView.trailingAnchor),
-            label.topAnchor.constraint(equalTo: parentView.topAnchor),
-            // Optionally adjust the height constraint if needed
-            // label.heightAnchor.constraint(equalToConstant: 30)
-        ])
     }
 
     private func createLabel(properties: [String: Any]) -> UILabel {
