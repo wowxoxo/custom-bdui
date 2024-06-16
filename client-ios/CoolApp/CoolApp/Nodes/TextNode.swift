@@ -5,6 +5,8 @@ class TextNode {
         let label = createLabel(properties: component.properties)
         label.translatesAutoresizingMaskIntoConstraints = false
         
+        print("Rendering TextNode with text: \(label.text ?? "nil") and font size: \(label.font.pointSize)")
+
         if let stackView = parentView as? UIStackView {
             let container = UIView()
             container.translatesAutoresizingMaskIntoConstraints = false
@@ -40,7 +42,7 @@ class TextNode {
             label.text = text
         }
         
-        if let fontSize = properties["font_size"] as? CGFloat {
+        if let fontSize = properties["fontSize"] as? CGFloat {
             label.font = label.font.withSize(fontSize)
         }
         

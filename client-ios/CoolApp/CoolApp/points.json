@@ -29,7 +29,7 @@
                 "type": "text",
                 "properties": {
                   "text": "Инвестиционный Банк «ВЕСТА» (ООО)",
-                  "font_size": 18,
+                  "font_size": 28,
                   "color": "#000000",
                   "alignment": "left"
                 }
@@ -46,7 +46,7 @@
                     "properties": {
                       "text": "119071, Москва регион, москва город, Ленинский пооспект улица. Тба пом. п 158",
                       "font_size": 14,
-                      "color": "#000000",
+                      "color": "#00ff00",
                       "alignment": "left",
                       "width": "0.85"
                     }
