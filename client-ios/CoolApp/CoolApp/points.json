@@ -19,51 +19,51 @@
             }
           },
           {
-              "type": "container",
-              "properties": {
-                "orientation": "vertical",
-                "padding": 10
+            "type": "container",
+            "properties": {
+              "orientation": "vertical",
+              "padding": 10
+            },
+            "children": [
+              {
+                "type": "text",
+                "properties": {
+                  "text": "Инвестиционный Банк «ВЕСТА» (ООО)",
+                  "font_size": 18,
+                  "color": "#000000",
+                  "alignment": "left"
+                }
               },
-              "children": [
+              {
+                "type": "container",
+                "properties": {
+                  "orientation": "horizontal",
+                  "padding": 10
+                },
+                "children": [
                   {
                     "type": "text",
                     "properties": {
-                      "text": "Инвестиционный Банк «ВЕСТА» (ООО)",
-                      "font_size": 48,
+                      "text": "119071, Москва регион, москва город, Ленинский пооспект улица. Тба пом. п 158",
+                      "font_size": 14,
                       "color": "#000000",
-                      "alignment": "left"
+                      "alignment": "left",
+                      "width": "0.85"
                     }
                   },
                   {
-                    "type": "container",
+                    "type": "text",
                     "properties": {
-                      "orientation": "horizontal",
-                      "padding": 10,
-                      "margin": {
-                        "bottom": 10
-                      }
-                    },
-                    "children": [
-                      {
-                        "type": "text",
-                        "properties": {
-                          "text": "119071, Москва регион, москва город, Ленинский пооспект улица. Тба пом. п 158",
-                          "font_size": 18,
-                          "color": "#000000",
-                          "flex": 1
-                        }
-                      },
-                      {
-                        "type": "text",
-                        "properties": {
-                          "text": "1.2 км",
-                          "font_size": 14,
-                          "color": "#888888"
-                        }
-                      }
-                    ]
+                      "text": "1.2 км",
+                      "font_size": 14,
+                      "color": "#888888",
+                      "alignment": "right",
+                      "width": "0.15"
+                    }
                   }
-              ]
+                ]
+              }
+            ]
           }
         ]
       }

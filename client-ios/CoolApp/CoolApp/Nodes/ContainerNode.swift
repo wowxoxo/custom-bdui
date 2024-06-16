@@ -4,7 +4,7 @@ class ContainerNode {
     func render(component: Component, in parentView: UIView, using nodeRenderer: NodeRenderer) {
         let containerView = ContainerNode.createContainerView(properties: component.properties)
         containerView.translatesAutoresizingMaskIntoConstraints = false
-        
+
         if let stackView = parentView as? UIStackView {
             stackView.addArrangedSubview(containerView)
         } else {
@@ -31,6 +31,8 @@ class ContainerNode {
             containerView.layoutMargins = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
             containerView.isLayoutMarginsRelativeArrangement = true
         }
+        containerView.distribution = .fill
+        containerView.alignment = .fill
         return containerView
     }
 }

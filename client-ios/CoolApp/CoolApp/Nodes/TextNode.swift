@@ -6,7 +6,22 @@ class TextNode {
         label.translatesAutoresizingMaskIntoConstraints = false
         
         if let stackView = parentView as? UIStackView {
-            stackView.addArrangedSubview(label)
+            let container = UIView()
+            container.translatesAutoresizingMaskIntoConstraints = false
+            container.addSubview(label)
+            
+            if let width = component.properties["width"] as? String, let widthMultiplier = Double(width) {
+                stackView.addArrangedSubview(container)
+                NSLayoutConstraint.activate([
+                    container.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: CGFloat(widthMultiplier)),
+                    label.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+                    label.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+                    label.topAnchor.constraint(equalTo: container.topAnchor),
+                    label.bottomAnchor.constraint(equalTo: container.bottomAnchor)
+                ])
+            } else {
+                stackView.addArrangedSubview(label)
+            }
         } else {
             parentView.addSubview(label)
             NSLayoutConstraint.activate([
