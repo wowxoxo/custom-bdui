@@ -4,7 +4,7 @@ class ContainerNode {
     func render(component: Component, in parentView: UIView, using nodeRenderer: NodeRenderer) {
         let containerView = ContainerNode.createContainerView(properties: component.properties)
         containerView.translatesAutoresizingMaskIntoConstraints = false
-
+        
         if let stackView = parentView as? UIStackView {
             stackView.addArrangedSubview(containerView)
         } else {
@@ -16,7 +16,6 @@ class ContainerNode {
             ])
         }
 
-        print("Rendering container with children count: \(component.children?.count ?? 0)")
         component.children?.forEach { child in
             nodeRenderer.render(component: child, in: containerView)
         }

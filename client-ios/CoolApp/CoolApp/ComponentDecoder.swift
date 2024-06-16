@@ -12,7 +12,6 @@ struct Component: Decodable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         type = try container.decode(String.self, forKey: .type)
-        print("Decoded type: \(type)")
         children = try container.decodeIfPresent([Component].self, forKey: .children)
         
         if let propertiesContainer = try? container.nestedContainer(keyedBy: DynamicCodingKeys.self, forKey: .properties) {
@@ -20,7 +19,6 @@ struct Component: Decodable {
         } else {
             properties = [:]
         }
-        print("Decoded properties: \(properties)")
     }
     
     private static func decodeProperties(container: KeyedDecodingContainer<DynamicCodingKeys>) throws -> [String: Any] {
@@ -35,7 +33,6 @@ struct Component: Decodable {
                 properties[key.stringValue] = value
             }
         }
-        print("Decoded properties: \(properties)")
         return properties
     }
 }
