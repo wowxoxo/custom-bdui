@@ -1,0 +1,261 @@
+{
+  "screen": {
+    "id": "office_detail_screen",
+    "components": [
+      {
+        "type": "container",
+        "properties": {
+          "orientation": "vertical",
+          "padding": 15
+        },
+        "children": [
+          {
+            "type": "text",
+            "properties": {
+              "text": "Дополнительный международный офис\n«Прайм» АКБ «ФОРА-БАНК»",
+              "font_size": 22,
+              "color": "#000000",
+              "alignment": "left",
+              "bold": true
+            }
+          },
+          {
+            "type": "container",
+            "properties": {
+              "orientation": "vertical",
+              "paddingTop": 30,
+              "paddingBottom": 10
+            },
+            "children": [
+              {
+                "type": "text",
+                "properties": {
+                  "text": "Адрес",
+                  "font_size": 15,
+                  "color": "#566379",
+                  "alignment": "left"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "properties": {
+              "text": "119071, Москва регион, Москва город, Ленинский проспект улица, 15а дом, д. 15а",
+              "font_size": 16,
+              "color": "#1D1D1D",
+              "alignment": "left"
+            }
+          },
+          {
+            "type": "container",
+            "properties": {
+              "orientation": "vertical",
+              "paddingTop": 30,
+              "paddingBottom": 10
+            },
+            "children": [
+              {
+                "type": "text",
+                "properties": {
+                  "text": "Контакты",
+                  "font_size": 15,
+                  "color": "#566379",
+                  "alignment": "left"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "properties": {
+              "text": "+7 863 438-28-00",
+              "font_size": 18,
+              "color": "#1E90FF",
+              "alignment": "left"
+            }
+          },
+          {
+            "type": "container",
+            "properties": {
+              "orientation": "vertical",
+              "paddingTop": 30,
+              "paddingBottom": 10
+            },
+            "children": [
+              {
+                "type": "text",
+                "properties": {
+                  "text": "Режим работы",
+                  "font_size": 15,
+                  "color": "#566379",
+                  "alignment": "left"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "properties": {
+              "text": "пн-пт с 10:00 до 19:00, сб с 10:00 до 17:00, вск — выходной",
+              "font_size": 16,
+              "color": "#000000",
+              "alignment": "left"
+            }
+          },
+          {
+            "type": "container",
+            "properties": {
+              "orientation": "vertical",
+              "paddingTop": 30,
+              "paddingBottom": 0
+            },
+            "children": [
+              {
+                "type": "text",
+                "properties": {
+                  "text": "Оказываемые услуги",
+                  "font_size": 15,
+                  "color": "#566379",
+                  "alignment": "left"
+                }
+              }
+            ]
+          },
+          {
+            "type": "container",
+            "properties": {
+              "orientation": "vertical",
+              "padding": 10
+            },
+            "children": [
+              {
+                "type": "container",
+                "properties": {
+                  "orientation": "vertical",
+                  "paddingBottom": 10,
+                  "paddingLeft": -5
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "properties": {
+                      "text": "• Обслуживание физических лиц",
+                      "font_size": 16,
+                      "color": "#000000",
+                      "alignment": "left"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "container",
+                "properties": {
+                  "orientation": "vertical",
+                  "paddingBottom": 10,
+                  "paddingLeft": -5
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "properties": {
+                      "text": "• Регистрация учётной записи",
+                      "font_size": 16,
+                      "color": "#000000",
+                      "alignment": "left"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "container",
+                "properties": {
+                  "orientation": "vertical",
+                  "paddingBottom": 10,
+                  "paddingLeft": -5
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "properties": {
+                      "text": "• Регистрация биометрии",
+                      "font_size": 16,
+                      "color": "#000000",
+                      "alignment": "left"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "container",
+                "properties": {
+                  "orientation": "vertical",
+                  "paddingBottom": 10,
+                  "paddingLeft": -5
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "properties": {
+                      "text": "• Удаление учётной записи",
+                      "font_size": 16,
+                      "color": "#000000",
+                      "alignment": "left"
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "container",
+                "properties": {
+                  "orientation": "vertical",
+                  "paddingBottom": 10,
+                  "paddingLeft": -5
+                },
+                "children": [
+                  {
+                    "type": "text",
+                    "properties": {
+                      "text": "• Восстановление личности",
+                      "font_size": 16,
+                      "color": "#000000",
+                      "alignment": "left"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "container",
+            "properties": {
+              "orientation": "vertical",
+              "paddingTop": 10,
+              "paddingBottom": 10
+            },
+            "children": [
+              {
+                "type": "text",
+                "properties": {
+                  "text": "Комментарий",
+                  "font_size": 15,
+                  "color": "#566379",
+                  "alignment": "left"
+                }
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "properties": {
+              "text": "Прием только по вопросам учётной записи в ЕСИА, установления отдельных жизненно важных выплат и срочных выплат по линии ПФР, заблаговременной работы с лицами, выходящими на пенсию",
+              "font_size": 16,
+              "color": "#000000",
+              "alignment": "left"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
