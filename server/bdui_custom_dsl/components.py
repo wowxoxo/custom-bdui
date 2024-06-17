@@ -1,16 +1,20 @@
+from typing import List, Optional, Union
+from dataclasses import dataclass, field
+
+@dataclass
 class Component:
 	def to_dict(self):
 		raise NotImplementedError("Subclasses should implement this method.")
 
+@dataclass
 class Text(Component):
-	def __init__(self, text, font_size=14, color="#000000", alignment="left", bold=False):
-		self.text = text
-		self.font_size = font_size
-		self.color = color
-		self.alignment = alignment
-		self.bold = bold
+	text: str
+	font_size: int = 14
+	color: str = "#000000"
+	alignment: str = "left"
+	bold: bool = False
 
-	def to_dict(self):
+	def to_dict(self) -> dict:
 		return {
 			"type": "text",
 			"properties": {
@@ -22,29 +26,36 @@ class Text(Component):
 			}
 		}
 
+@dataclass
 class Container(Component):
-	def __init__(self, orientation="vertical", padding=0, padding_top=0, padding_bottom=0, padding_left=0, padding_right=0):
-		self.orientation = orientation
-		self.padding = padding
-		self.padding_top = padding_top
-		self.padding_bottom = padding_bottom
-		self.padding_left = padding_left
-		self.padding_right = padding_right
-		self.children = []
+	orientation: str = "vertical"
+	padding: Optional[int] = None
+	padding_top: Optional[int] = None
+	padding_bottom: Optional[int] = None
+	padding_left: Optional[int] = None
+	padding_right: Optional[int] = None
+	children: List[Component] = field(default_factory=list)
 
-	def add_child(self, child):
+	def add_child(self, child: Component) -> None:
 		self.children.append(child)
 
-	def to_dict(self):
+	def to_dict(self) -> dict:
+		properties = {
+			"orientation": self.orientation,
+		}
+		if self.padding is not None:
+			properties["padding"] = self.padding
+		if self.padding_top is not None:
+			properties["paddingTop"] = self.padding_top
+		if self.padding_bottom is not None:
+			properties["paddingBottom"] = self.padding_bottom
+		if self.padding_left is not None:
+			properties["paddingLeft"] = self.padding_left
+		if self.padding_right is not None:
+			properties["paddingRight"] = self.padding_right
+
 		return {
 			"type": "container",
-			"properties": {
-				"orientation": self.orientation,
-				"padding": self.padding,
-				"paddingTop": self.padding_top,
-				"paddingBottom": self.padding_bottom,
-				"paddingLeft": self.padding_left,
-				"paddingRight": self.padding_right
-			},
+			"properties": properties,
 			"children": [child.to_dict() for child in self.children]
 		}

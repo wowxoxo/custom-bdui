@@ -1,14 +1,16 @@
-from .components import Container, Text
+from .components import Container, Text, Component
+from typing import List
+from dataclasses import dataclass, field
 
+@dataclass
 class Screen:
-	def __init__(self, screen_id):
-		self.screen_id = screen_id
-		self.components = []
+	screen_id: str
+	components: List[Component] = field(default_factory=list)
 
-	def add_component(self, component):
+	def add_component(self, component: Component) -> None:
 		self.components.append(component)
 
-	def to_dict(self):
+	def to_dict(self) -> dict:
 		return {
 			"screen": {
 				"id": self.screen_id,

@@ -20,7 +20,7 @@ def get_dsl_points(request):
 def get_dsl_point(request, id):
 	screen = Screen(screen_id="office_detail_screen")
 	
-	# Define the screen structure
+	# Define the screen structure using DSL
 	main_container = Container(orientation="vertical", padding=15)
 	
 	# Add title
