@@ -36,7 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bdui_custom_app'
+    'bdui_custom_app',
+    'bdui_custom_dsl'
 ]
 
 MIDDLEWARE = [

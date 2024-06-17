@@ -19,5 +19,6 @@ from django.urls import path, include
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
-    path('bdui-custom/', include('bdui_custom_app.urls'))
+    path('bdui-custom/', include('bdui_custom_app.urls')),
+    path('bdui-dsl/', include('bdui_custom_dsl.urls'))
 ]
