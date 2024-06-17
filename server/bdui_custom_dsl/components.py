@@ -13,17 +13,34 @@ class Text(Component):
 	color: str = "#000000"
 	alignment: str = "left"
 	bold: bool = False
+	padding: Optional[int] = None
+	padding_top: Optional[int] = None
+	padding_bottom: Optional[int] = None
+	padding_left: Optional[int] = None
+	padding_right: Optional[int] = None
 
 	def to_dict(self) -> dict:
+		properties = {
+			"text": self.text,
+			"font_size": self.font_size,
+			"color": self.color,
+			"alignment": self.alignment,
+			"bold": self.bold
+		}
+		if self.padding is not None:
+			properties["padding"] = self.padding
+		if self.padding_top is not None:
+			properties["paddingTop"] = self.padding_top
+		if self.padding_bottom is not None:
+			properties["paddingBottom"] = self.padding_bottom
+		if self.padding_left is not None:
+			properties["paddingLeft"] = self.padding_left
+		if self.padding_right is not None:
+			properties["paddingRight"] = self.padding_right
+
 		return {
 			"type": "text",
-			"properties": {
-				"text": self.text,
-				"font_size": self.font_size,
-				"color": self.color,
-				"alignment": self.alignment,
-				"bold": self.bold
-			}
+			"properties": properties
 		}
 
 @dataclass
@@ -36,8 +53,9 @@ class Container(Component):
 	padding_right: Optional[int] = None
 	children: List[Component] = field(default_factory=list)
 
-	def add_child(self, child: Component) -> None:
-		self.children.append(child)
+	def add_child(self, child: Optional[Component]) -> None:
+		if child is not None:
+			self.children.append(child)
 
 	def to_dict(self) -> dict:
 		properties = {
