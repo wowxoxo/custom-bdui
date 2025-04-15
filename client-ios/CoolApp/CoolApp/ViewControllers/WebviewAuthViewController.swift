@@ -2,13 +2,7 @@ import UIKit
 import WebKit
 
 class WebviewAuthViewController: UIViewController, WKNavigationDelegate {
-    private var webView: WKWebView!
-
-    override func loadView() {
-        webView = WKWebView()
-        webView.navigationDelegate = self
-        view = webView
-    }
+    @IBOutlet weak var webView: WKWebView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -16,6 +10,7 @@ class WebviewAuthViewController: UIViewController, WKNavigationDelegate {
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             title: "Back", style: .plain, target: self, action: #selector(backTapped)
         )
+        webView.navigationDelegate = self
         
         let url = URL(string: "https://wowxoxo.github.io/coolapp-auth-form")!
         webView.load(URLRequest(url: url))
