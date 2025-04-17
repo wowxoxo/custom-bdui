@@ -2,9 +2,9 @@ import UIKit
 import WebKit
 
 class WebviewAuthViewController: UIViewController, WKNavigationDelegate {
-    @IBOutlet weak var webView: WKWebView!
+    var webView: WKWebView!
 
-    override func viewDidLoad() {
+    func viewDidLoad0() {
         super.viewDidLoad()
         title = "Авторизация"
         navigationItem.leftBarButtonItem = UIBarButtonItem(
@@ -14,6 +14,39 @@ class WebviewAuthViewController: UIViewController, WKNavigationDelegate {
         
         let url = URL(string: "https://wowxoxo.github.io/coolapp-auth-form")!
         webView.load(URLRequest(url: url))
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        title = "Авторизация"
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            title: "Back", style: .plain, target: self, action: #selector(backTapped)
+        )
+
+        // Create config with JS and inline media enabled
+        let config = WKWebViewConfiguration()
+        config.preferences.javaScriptEnabled = true
+        config.allowsInlineMediaPlayback = true
+
+        // Create the webView with custom config
+        webView = WKWebView(frame: .zero, configuration: config)
+        webView.navigationDelegate = self
+        webView.translatesAutoresizingMaskIntoConstraints = false
+        webView.scrollView.keyboardDismissMode = .interactive
+
+        view.addSubview(webView)
+
+        // Add constraints so it fills the screen
+        NSLayoutConstraint.activate([
+            webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            webView.topAnchor.constraint(equalTo: view.topAnchor),
+            webView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+
+        if let url = URL(string: "https://wowxoxo.github.io/coolapp-auth-form") {
+            webView.load(URLRequest(url: url))
+        }
     }
 
     @objc func backTapped() {
