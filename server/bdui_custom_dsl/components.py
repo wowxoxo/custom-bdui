@@ -18,6 +18,8 @@ class Text(Component):
 	padding_bottom: Optional[int] = None
 	padding_left: Optional[int] = None
 	padding_right: Optional[int] = None
+	action: Optional[str] = None
+	uri: Optional[str] = None
 
 	def to_dict(self) -> dict:
 		properties = {
@@ -37,6 +39,10 @@ class Text(Component):
 			properties["paddingLeft"] = self.padding_left
 		if self.padding_right is not None:
 			properties["paddingRight"] = self.padding_right
+		if self.action is not None:
+			properties["action"] = self.action
+		if self.uri is not None:
+			properties["uri"] = self.uri
 
 		return {
 			"type": "text",

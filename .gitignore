@@ -4,3 +4,6 @@
 **/xcuserdata/
 *.xcuserstate
 *.xcuserdatad/
+
+cookies.txt
+response.html

@@ -3,6 +3,8 @@ import json
 import os
 from .dsl_builder import Screen
 from .components import Container, Text
+from .fsm_manager import fsm_manager
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 data_path = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -64,3 +66,51 @@ def get_dsl_point(request, id):
 	response = JsonResponse(response_data, safe=False, json_dumps_params={'ensure_ascii': False})
 	response['Content-Type'] = 'application/json; charset=utf-8'
 	return response
+
+@ensure_csrf_cookie
+def get_csrf_token(request):
+    return JsonResponse({"message": "CSRF cookie set"})
+
+def next_screen(request):
+    if request.method != "POST":
+        return HttpResponse("Method not allowed", status=405)
+
+    data = json.loads(request.body)
+    user_id = data.get("user_id", "default_user")  # Mock user ID
+    event = data.get("event", "")
+
+    fsm = fsm_manager.get_or_create_fsm(user_id)
+    fsm.trigger_event(event)
+    state = fsm.get_state()
+
+    # Mock screen content based on state
+    screen = Screen(screen_id=state)
+    main_container = Container(orientation="vertical", padding=15)
+
+    if state == "need_register":
+        main_container.add_child(Text("Зарегистрируйтесь в приложении «CoolApp»", font_size=22, bold=True))
+        main_container.add_child(Text("Первичная регистрация необходима для работы в приложении", font_size=16))
+        main_container.add_child(
+            Container(orientation="vertical", padding_top=20).add_child(
+                Text("Зарегистрироваться", font_size=18, color="#1E90FF", action="request", event="tap_register")
+            )
+        )
+    elif state == "auth":
+        main_container.add_child(Text("Загрузка авторизации...", font_size=16))
+        main_container.add_child(
+            Container(orientation="vertical", padding_top=20).add_child(
+                Text("Webview", font_size=18, color="#1E90FF", action="webview", uri="https://wowxoxo.github.io/coolapp-auth-form")
+            )
+        )
+    elif state == "services":
+        main_container.add_child(Text("Доступные услуги", font_size=22, bold=True))
+        main_container.add_child(Text("Выберите услугу для продолжения", font_size=16))
+    elif state == "not_enough_rights":
+        main_container.add_child(Text("Недостаточно прав", font_size=22, bold=True))
+        main_container.add_child(Text("Невозможно продолжить работу", font_size=16))
+
+    screen.add_component(main_container)
+    response_data = screen.to_dict()
+    response_data["deeplink"] = f"coolapp://{state}"
+
+    return JsonResponse(response_data, safe=False, json_dumps_params={"ensure_ascii": False})
