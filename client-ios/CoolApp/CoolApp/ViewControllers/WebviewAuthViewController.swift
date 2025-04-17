@@ -4,18 +4,6 @@ import WebKit
 class WebviewAuthViewController: UIViewController, WKNavigationDelegate {
     var webView: WKWebView!
 
-    func viewDidLoad0() {
-        super.viewDidLoad()
-        title = "Авторизация"
-        navigationItem.leftBarButtonItem = UIBarButtonItem(
-            title: "Back", style: .plain, target: self, action: #selector(backTapped)
-        )
-        webView.navigationDelegate = self
-        
-        let url = URL(string: "https://wowxoxo.github.io/coolapp-auth-form")!
-        webView.load(URLRequest(url: url))
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Авторизация"
