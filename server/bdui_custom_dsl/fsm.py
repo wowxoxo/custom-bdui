@@ -1,6 +1,10 @@
 from transitions import Machine
 from dataclasses import dataclass
 from typing import Dict, Optional
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 @dataclass
 class UserFlow:
@@ -27,11 +31,15 @@ class RegistrationFSM:
     def get_state(self) -> str:
         return self.state
 
-    def trigger_event(self, event: str) -> None:
+    def trigger_event(self, event: str) -> bool:
         try:
+            logger.info(f"Triggering {event} from {self.state} for user {self.user_id}")
             self.trigger(event)
+            logger.info(f"Transitioned to {self.state}")
+            return True
         except Exception as e:
-            print(f"FSM error: {e}")
+            logger.error(f"FSM error: {e}")
+            return False
 
     def to_dict(self) -> Dict:
         return {"user_id": self.user_id, "flow": self.flow, "state": self.state}

@@ -77,15 +77,19 @@ def next_screen(request):
     if request.method != "POST":
         return HttpResponse("Method not allowed", status=405)
 
-    data = json.loads(request.body)
-    user_id = data.get("user_id", "default_user")  # Mock user ID
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return HttpResponse("Invalid JSON", status=400)
+
+    user_id = data.get("user_id", "default_user")
     event = data.get("event", "")
 
     fsm = fsm_manager.get_or_create_fsm(user_id)
-    fsm.trigger_event(event)
-    state = fsm.get_state()
+    if not fsm.trigger_event(event):
+        return JsonResponse({"error": f"Invalid event {event} for state {fsm.get_state()}"}, status=400)
 
-    # Mock screen content based on state
+    state = fsm.get_state()
     screen = Screen(screen_id=state)
     main_container = Container(orientation="vertical", padding=15)
 

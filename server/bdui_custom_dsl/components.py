@@ -20,6 +20,7 @@ class Text(Component):
 	padding_right: Optional[int] = None
 	action: Optional[str] = None
 	uri: Optional[str] = None
+	event: Optional[str] = None
 
 	def to_dict(self) -> dict:
 		properties = {
@@ -43,6 +44,8 @@ class Text(Component):
 			properties["action"] = self.action
 		if self.uri is not None:
 			properties["uri"] = self.uri
+		if self.event is not None:
+			properties["event"] = self.event
 
 		return {
 			"type": "text",

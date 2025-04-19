@@ -20,3 +20,16 @@ curl -X POST -b cookies.txt \
   -d '{"user_id": "test_user", "event": "tap_register"}' \
   http://127.0.0.1:8000/bdui-dsl/fsm/next
 ```
+
+## FSM debugging
+```
+curl -X POST http://127.0.0.1:8000/bdui-dsl/fsm/next -H "Content-Type: application/json" -d '{"user_id": "test_user", "event": "tap_register"}'
+```
+Should return screen_id: "auth".
+
+
+```
+curl -X POST http://127.0.0.1:8000/bdui-dsl/fsm/next -H "Content-Type: application/json" -d '{"user_id": "test_user", "event": "auth_success"}'
+```
+Should return screen_id: "services"
+

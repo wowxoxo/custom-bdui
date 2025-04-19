@@ -11,12 +11,10 @@ class WebviewAuthViewController: UIViewController, WKNavigationDelegate {
             title: "Back", style: .plain, target: self, action: #selector(backTapped)
         )
 
-        // Create config with JS and inline media enabled
         let config = WKWebViewConfiguration()
         config.preferences.javaScriptEnabled = true
         config.allowsInlineMediaPlayback = true
 
-        // Create the webView with custom config
         webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = self
         webView.translatesAutoresizingMaskIntoConstraints = false
@@ -24,7 +22,6 @@ class WebviewAuthViewController: UIViewController, WKNavigationDelegate {
 
         view.addSubview(webView)
 
-        // Add constraints so it fills the screen
         NSLayoutConstraint.activate([
             webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -36,7 +33,7 @@ class WebviewAuthViewController: UIViewController, WKNavigationDelegate {
             webView.load(URLRequest(url: url))
         }
     }
-    
+
     @objc func backTapped() {
         sendEventToBackend(event: "back")
     }
@@ -44,15 +41,15 @@ class WebviewAuthViewController: UIViewController, WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if let url = navigationAction.request.url, url.scheme == "coolapp" {
             print("Callback received: \(url.absoluteString)")
-            let event = url.query?.contains("status=success") == true ? "auth_success" :
-                        url.query?.contains("status=not_enough_rights") == true ? "auth_fail" : ""
+            let event = url.absoluteString.contains("status=success") ? "auth_success" :
+                        url.absoluteString.contains("status=not_enough_rights") ? "auth_fail" : ""
             sendEventToBackend(event: event)
             decisionHandler(.cancel)
         } else {
             decisionHandler(.allow)
         }
     }
-    
+
     private func sendEventToBackend(event: String) {
         guard let url = URL(string: "http://127.0.0.1:8000/bdui-dsl/fsm/next") else { return }
         var request = URLRequest(url: url)
@@ -64,8 +61,7 @@ class WebviewAuthViewController: UIViewController, WKNavigationDelegate {
         URLSession.shared.dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {
                 if let data = data, let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                    let screen = json["screen"] as? [String: Any], let screenId = screen["id"] as? String {
-                    // Later: Switch to screenId
+                   let screen = json["screen"] as? [String: Any], let screenId = screen["id"] as? String {
                     print("Next screen: \(screenId)")
                     self.navigationController?.popViewController(animated: true)
                 } else {
