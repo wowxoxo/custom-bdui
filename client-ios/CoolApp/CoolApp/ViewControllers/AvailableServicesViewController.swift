@@ -47,8 +47,8 @@ class AvailableServicesViewController: UIViewController, UITableViewDataSource, 
             }
         }
     
-    @IBAction func registerTapped() {
-        performSegue(withIdentifier: "toWebviewAuth", sender: nil)
+    @IBAction func registerButtonTapped(_ sender: UIButton) {
+        performSegue(withIdentifier: "toNeedRegister", sender: nil)
     }
     
 

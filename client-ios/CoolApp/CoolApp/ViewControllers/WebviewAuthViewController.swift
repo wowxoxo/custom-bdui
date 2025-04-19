@@ -36,20 +36,43 @@ class WebviewAuthViewController: UIViewController, WKNavigationDelegate {
             webView.load(URLRequest(url: url))
         }
     }
-
+    
     @objc func backTapped() {
-        // Later: Send to backend, for now just go back
-        navigationController?.popViewController(animated: true)
+        sendEventToBackend(event: "back")
     }
 
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if let url = navigationAction.request.url, url.scheme == "coolapp" {
             print("Callback received: \(url.absoluteString)")
-            // Later: Parse and send to backend
+            let event = url.query?.contains("status=success") == true ? "auth_success" :
+                        url.query?.contains("status=not_enough_rights") == true ? "auth_fail" : ""
+            sendEventToBackend(event: event)
             decisionHandler(.cancel)
-            navigationController?.popViewController(animated: true)
         } else {
             decisionHandler(.allow)
         }
+    }
+    
+    private func sendEventToBackend(event: String) {
+        guard let url = URL(string: "http://127.0.0.1:8000/bdui-dsl/fsm/next") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let body: [String: Any] = ["user_id": "test_user", "event": event]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            DispatchQueue.main.async {
+                if let data = data, let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                    let screen = json["screen"] as? [String: Any], let screenId = screen["id"] as? String {
+                    // Later: Switch to screenId
+                    print("Next screen: \(screenId)")
+                    self.navigationController?.popViewController(animated: true)
+                } else {
+                    print("Error: \(error?.localizedDescription ?? "No data")")
+                    self.navigationController?.popViewController(animated: true)
+                }
+            }
+        }.resume()
     }
 }

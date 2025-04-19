@@ -26,7 +26,7 @@
                                     <state key="normal" title="Button"/>
                                     <buttonConfiguration key="configuration" style="plain" title="Button"/>
                                     <connections>
-                                        <segue destination="eTg-Cw-MJ6" kind="show" identifier="toWebviewAuth" id="pMr-lQ-0PV"/>
+                                        <segue destination="kyk-0j-vc0" kind="show" identifier="toNeedRegister" id="DY1-V4-oXp"/>
                                     </connections>
                                 </button>
                                 <prototypes>
@@ -58,6 +58,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="959.5419847328244" y="-27.464788732394368"/>
+        </scene>
+        <!--Need Register View Controller-->
+        <scene sceneID="pVN-gi-bXi">
+            <objects>
+                <viewController id="kyk-0j-vc0" customClass="NeedRegisterViewController" customModule="CoolApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="lxB-5J-zNX">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="qxa-16-0b9"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="06g-PS-ype"/>
+                    <connections>
+                        <segue destination="eTg-Cw-MJ6" kind="show" identifier="toWebviewAuth" id="CFC-7w-Aj9"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="qkv-rR-dHf" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="33" y="761"/>
         </scene>
         <!--Webview Auth View Controller-->
         <scene sceneID="Hk7-iN-m2A">

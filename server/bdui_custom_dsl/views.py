@@ -5,6 +5,7 @@ from .dsl_builder import Screen
 from .components import Container, Text
 from .fsm_manager import fsm_manager
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import csrf_exempt
 
 data_path = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -71,6 +72,7 @@ def get_dsl_point(request, id):
 def get_csrf_token(request):
     return JsonResponse({"message": "CSRF cookie set"})
 
+@csrf_exempt
 def next_screen(request):
     if request.method != "POST":
         return HttpResponse("Method not allowed", status=405)
