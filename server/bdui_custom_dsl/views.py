@@ -2,7 +2,7 @@ from django.http import JsonResponse, HttpResponse
 import json
 import os
 from .dsl_builder import Screen
-from .components import Container, Text
+from .components import Container, Text, Button, Image
 from .fsm_manager import fsm_manager
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.csrf import csrf_exempt
@@ -94,18 +94,21 @@ def next_screen(request):
     main_container = Container(orientation="vertical", padding=15)
 
     if state == "need_register":
+        main_container.add_child(
+            Image(uri="https://wowxoxo.github.io/coolapp-auth-form/key.svg", width=100, height=50)
+        )
         main_container.add_child(Text("Зарегистрируйтесь в приложении «CoolApp»", font_size=22, bold=True))
         main_container.add_child(Text("Первичная регистрация необходима для работы в приложении", font_size=16))
         main_container.add_child(
             Container(orientation="vertical", padding_top=20).add_child(
-                Text("Зарегистрироваться", font_size=18, color="#1E90FF", action="request", event="tap_register")
+                Button(text="Зарегистрироваться", action="request", event="tap_register")
             )
         )
     elif state == "auth":
         main_container.add_child(Text("Загрузка авторизации...", font_size=16))
         main_container.add_child(
             Container(orientation="vertical", padding_top=20).add_child(
-                Text("Webview", font_size=18, color="#1E90FF", action="webview", uri="https://wowxoxo.github.io/coolapp-auth-form")
+                Button(text="Webview", action="webview", uri="https://wowxoxo.github.io/coolapp-auth-form")
             )
         )
     elif state == "services":
@@ -113,12 +116,12 @@ def next_screen(request):
         main_container.add_child(Text("Выберите услугу для продолжения", font_size=16))
         main_container.add_child(
             Container(orientation="vertical", padding_top=20).add_child(
-                Text("Услуга №1", font_size=18, color="#1E90FF", action="request", event="select_service1")
+                Button(text="Услуга №1", action="request", event="select_service1")
             )
         )
         main_container.add_child(
             Container(orientation="vertical", padding_top=10).add_child(
-                Text("Услуга №2", font_size=18, color="#1E90FF", action="request", event="select_service2")
+                Button(text="Услуга №2", action="request", event="select_service2")
             )
         )
     elif state == "not_enough_rights":
@@ -126,7 +129,7 @@ def next_screen(request):
         main_container.add_child(Text("Невозможно продолжить работу", font_size=16))
         main_container.add_child(
             Container(orientation="vertical", padding_top=20).add_child(
-                Text("Попробовать снова", font_size=18, color="#1E90FF", action="request", event="tap_register")
+                Button(text="Попробовать снова", action="request", event="tap_register")
             )
         )
 

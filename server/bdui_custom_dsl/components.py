@@ -62,6 +62,9 @@ class Container(Component):
     padding_right: Optional[int] = None
     children: List[Component] = field(default_factory=list)
 
+    def __post_init__(self):
+        self.children = self.children or []
+
     def add_child(self, child: Optional[Component]) -> 'Container':
         if child is not None:
             self.children.append(child)
@@ -88,3 +91,61 @@ class Container(Component):
             "children": [child.to_dict() for child in self.children]
         }
 
+@dataclass
+class Button(Component):
+    text: str
+    action: str  # "request", "toggle", "native"
+    event: Optional[str] = None
+    uri: Optional[str] = None
+    target: Optional[str] = None
+    font_size: int = 18
+    color: str = "#1E90FF"
+
+    def to_dict(self) -> dict:
+        properties = {
+            "text": self.text,
+            "action": self.action,
+            "font_size": self.font_size,
+            "color": self.color
+        }
+        if self.event is not None:
+            properties["event"] = self.event
+        if self.uri is not None:
+            properties["uri"] = self.uri
+        if self.target is not None:
+            properties["target"] = self.target
+        return {"type": "button", "properties": properties}
+    
+@dataclass
+class Checkbox(Component):
+    text: str
+    target: str  # Button to enable
+    checked: bool = False
+    font_size: int = 16
+    color: str = "#000000"
+
+    def to_dict(self) -> dict:
+        return {
+            "type": "checkbox",
+            "properties": {
+                "text": self.text,
+                "target": self.target,
+                "checked": self.checked,
+                "font_size": self.font_size,
+                "color": self.color
+            }
+        }
+
+@dataclass
+class Image(Component):
+    uri: str
+    width: Optional[int] = None
+    height: Optional[int] = None
+
+    def to_dict(self) -> dict:
+        properties = {"uri": self.uri}
+        if self.width is not None:
+            properties["width"] = self.width
+        if self.height is not None:
+            properties["height"] = self.height
+        return {"type": "image", "properties": properties}
