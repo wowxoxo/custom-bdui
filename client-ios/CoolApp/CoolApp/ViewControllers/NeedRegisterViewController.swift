@@ -6,6 +6,8 @@ class NeedRegisterViewController: UIViewController {
         title = "Регистрация"
         view.backgroundColor = .white
 
+        sendEventToBackend(event: "reset") { _ in } // Reset FSM
+
         let label = UILabel()
         label.text = "Зарегистрируйтесь в приложении «CoolApp»"
         label.font = .boldSystemFont(ofSize: 22)
@@ -48,20 +50,20 @@ class NeedRegisterViewController: UIViewController {
     }
 
     @objc func registerTapped() {
-        sendEventToBackend(event: "tap_register") { success in
-            if success {
+        sendEventToBackend(event: "tap_register") { screenId in
+            if screenId == "auth" {
                 DispatchQueue.main.async {
                     self.performSegue(withIdentifier: "toWebviewAuth", sender: nil)
                 }
             } else {
-                print("Failed to trigger tap_register")
+                print("Unexpected screen: \(screenId ?? "none")")
             }
         }
     }
 
-    private func sendEventToBackend(event: String, completion: @escaping (Bool) -> Void) {
+    private func sendEventToBackend(event: String, completion: @escaping (String?) -> Void) {
         guard let url = URL(string: "http://127.0.0.1:8000/bdui-dsl/fsm/next") else {
-            completion(false)
+            completion(nil)
             return
         }
         var request = URLRequest(url: url)
@@ -74,10 +76,10 @@ class NeedRegisterViewController: UIViewController {
             if let data = data, let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                let screen = json["screen"] as? [String: Any], let screenId = screen["id"] as? String {
                 print("Next screen: \(screenId)")
-                completion(screenId == "auth")
+                completion(screenId)
             } else {
                 print("Error: \(error?.localizedDescription ?? "No data")")
-                completion(false)
+                completion(nil)
             }
         }.resume()
     }

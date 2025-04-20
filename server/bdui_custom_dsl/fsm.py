@@ -9,8 +9,8 @@ logger = logging.getLogger(__name__)
 @dataclass
 class UserFlow:
     user_id: str
-    flow: str  # e.g., "registration"
-    state: str  # e.g., "need_register"
+    flow: str
+    state: str
 
 class RegistrationFSM:
     def __init__(self, user_id: str):
@@ -22,10 +22,12 @@ class RegistrationFSM:
             initial="need_register",
             transitions=[
                 {"trigger": "tap_register", "source": "need_register", "dest": "auth"},
-                {"trigger": "tap_register", "source": "not_enough_rights", "dest": "auth"},  # allow another try
+                {"trigger": "tap_register", "source": "not_enough_rights", "dest": "auth"},
+                {"trigger": "tap_register", "source": "auth", "dest": "auth"},  # Allow retry
                 {"trigger": "auth_success", "source": "auth", "dest": "services"},
                 {"trigger": "auth_fail", "source": "auth", "dest": "not_enough_rights"},
                 {"trigger": "back", "source": ["auth", "not_enough_rights"], "dest": "need_register"},
+                {"trigger": "reset", "source": "*", "dest": "need_register"},  # Reset from any state
             ],
         )
 

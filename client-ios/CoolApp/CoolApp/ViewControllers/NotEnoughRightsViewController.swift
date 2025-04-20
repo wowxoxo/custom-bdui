@@ -11,7 +11,7 @@ class NotEnoughRightsViewController: UIViewController {
         view.backgroundColor = .white
 
         titleLabel = UILabel()
-        titleLabel.text = "Недостаточно прав" // From backend JSON
+        titleLabel.text = "Недостаточно прав"
         titleLabel.font = .boldSystemFont(ofSize: 22)
         titleLabel.textAlignment = .center
         titleLabel.numberOfLines = 0
@@ -19,7 +19,7 @@ class NotEnoughRightsViewController: UIViewController {
         view.addSubview(titleLabel)
 
         subtitleLabel = UILabel()
-        subtitleLabel.text = "Невозможно продолжить работу" // From backend JSON
+        subtitleLabel.text = "Невозможно продолжить работу"
         subtitleLabel.font = .systemFont(ofSize: 16)
         subtitleLabel.textAlignment = .center
         subtitleLabel.numberOfLines = 0
@@ -52,23 +52,21 @@ class NotEnoughRightsViewController: UIViewController {
     }
 
     @objc func retryTapped() {
-        sendEventToBackend(event: "tap_register") { success in
-            if success {
+        sendEventToBackend(event: "tap_register") { screenId in
+            if screenId == "auth" {
                 DispatchQueue.main.async {
-                    self.navigationController?.popToViewController(
-                        self.navigationController!.viewControllers.first(where: { $0 is NeedRegisterViewController })!,
-                        animated: true
-                    )
+                    let vc = WebviewAuthViewController()
+                    self.navigationController?.pushViewController(vc, animated: true)
                 }
             } else {
-                print("Failed to retry registration")
+                print("Unexpected screen: \(screenId ?? "none")")
             }
         }
     }
 
-    private func sendEventToBackend(event: String, completion: @escaping (Bool) -> Void) {
+    private func sendEventToBackend(event: String, completion: @escaping (String?) -> Void) {
         guard let url = URL(string: "http://127.0.0.1:8000/bdui-dsl/fsm/next") else {
-            completion(false)
+            completion(nil)
             return
         }
         var request = URLRequest(url: url)
@@ -81,10 +79,10 @@ class NotEnoughRightsViewController: UIViewController {
             if let data = data, let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                let screen = json["screen"] as? [String: Any], let screenId = screen["id"] as? String {
                 print("Next screen: \(screenId)")
-                completion(screenId == "auth")
+                completion(screenId)
             } else {
                 print("Error: \(error?.localizedDescription ?? "No data")")
-                completion(false)
+                completion(nil)
             }
         }.resume()
     }

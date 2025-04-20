@@ -10,9 +10,10 @@ class ServicesViewController: UIViewController {
         super.viewDidLoad()
         title = "Доступные услуги"
         view.backgroundColor = .white
+        navigationItem.setHidesBackButton(true, animated: false) // Hide back button
 
         titleLabel = UILabel()
-        titleLabel.text = "Доступные услуги" // From backend JSON
+        titleLabel.text = "Доступные услуги"
         titleLabel.font = .boldSystemFont(ofSize: 22)
         titleLabel.textAlignment = .center
         titleLabel.numberOfLines = 0
@@ -20,7 +21,7 @@ class ServicesViewController: UIViewController {
         view.addSubview(titleLabel)
 
         subtitleLabel = UILabel()
-        subtitleLabel.text = "Выберите услугу для продолжения" // From backend JSON
+        subtitleLabel.text = "Выберите услугу для продолжения"
         subtitleLabel.font = .systemFont(ofSize: 16)
         subtitleLabel.textAlignment = .center
         subtitleLabel.numberOfLines = 0
@@ -65,10 +66,10 @@ class ServicesViewController: UIViewController {
     }
 
     @objc func service1Tapped() {
-        print("Service 1 selected") // Later: Send select_service1
+        print("Service 1 selected")
     }
 
     @objc func service2Tapped() {
-        print("Service 2 selected") // Later: Send select_service2
+        print("Service 2 selected")
     }
 }
