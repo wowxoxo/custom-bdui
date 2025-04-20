@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		75A65B772DAC375900FA2597 /* WebviewAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A65B752DAC375900FA2597 /* WebviewAuthViewController.swift */; };
 		75A65B7A2DB40A1600FA2597 /* NeedRegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A65B792DB40A1600FA2597 /* NeedRegisterViewController.swift */; };
+		75A65B7C2DB4E32E00FA2597 /* ServicesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A65B7B2DB4E32E00FA2597 /* ServicesViewController.swift */; };
+		75A65B7E2DB4E3FA00FA2597 /* NotEnoughRightsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A65B7D2DB4E3FA00FA2597 /* NotEnoughRightsViewController.swift */; };
 		840490352C198F72009DD628 /* CustomBDUIPointDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840490342C198F72009DD628 /* CustomBDUIPointDetailViewController.swift */; };
 		843E51502C19B52300D2478C /* CustomBDUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843E514F2C19B52300D2478C /* CustomBDUI.swift */; };
 		843E51522C19B56500D2478C /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843E51512C19B56500D2478C /* JSONParser.swift */; };
@@ -38,6 +40,8 @@
 /* Begin PBXFileReference section */
 		75A65B752DAC375900FA2597 /* WebviewAuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebviewAuthViewController.swift; sourceTree = "<group>"; };
 		75A65B792DB40A1600FA2597 /* NeedRegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeedRegisterViewController.swift; sourceTree = "<group>"; };
+		75A65B7B2DB4E32E00FA2597 /* ServicesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServicesViewController.swift; sourceTree = "<group>"; };
+		75A65B7D2DB4E3FA00FA2597 /* NotEnoughRightsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotEnoughRightsViewController.swift; sourceTree = "<group>"; };
 		840490342C198F72009DD628 /* CustomBDUIPointDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBDUIPointDetailViewController.swift; sourceTree = "<group>"; };
 		843E514F2C19B52300D2478C /* CustomBDUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBDUI.swift; sourceTree = "<group>"; };
 		843E51512C19B56500D2478C /* JSONParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
@@ -145,6 +149,8 @@
 				840490342C198F72009DD628 /* CustomBDUIPointDetailViewController.swift */,
 				75A65B752DAC375900FA2597 /* WebviewAuthViewController.swift */,
 				75A65B792DB40A1600FA2597 /* NeedRegisterViewController.swift */,
+				75A65B7B2DB4E32E00FA2597 /* ServicesViewController.swift */,
+				75A65B7D2DB4E3FA00FA2597 /* NotEnoughRightsViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -252,6 +258,8 @@
 				840490352C198F72009DD628 /* CustomBDUIPointDetailViewController.swift in Sources */,
 				843E51502C19B52300D2478C /* CustomBDUI.swift in Sources */,
 				843E51692C1A159700D2478C /* TestJSONParser.swift in Sources */,
+				75A65B7C2DB4E32E00FA2597 /* ServicesViewController.swift in Sources */,
+				75A65B7E2DB4E3FA00FA2597 /* NotEnoughRightsViewController.swift in Sources */,
 				843E51572C19BDD000D2478C /* ServerDrivenView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

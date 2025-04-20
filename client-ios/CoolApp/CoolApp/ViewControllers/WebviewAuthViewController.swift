@@ -63,7 +63,15 @@ class WebviewAuthViewController: UIViewController, WKNavigationDelegate {
                 if let data = data, let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                    let screen = json["screen"] as? [String: Any], let screenId = screen["id"] as? String {
                     print("Next screen: \(screenId)")
-                    self.navigationController?.popViewController(animated: true)
+                    if screenId == "services" {
+                        let vc = ServicesViewController()
+                        self.navigationController?.pushViewController(vc, animated: true)
+                    } else if screenId == "not_enough_rights" {
+                        let vc = NotEnoughRightsViewController()
+                        self.navigationController?.pushViewController(vc, animated: true)
+                    } else if screenId == "need_register" {
+                        self.navigationController?.popViewController(animated: true)
+                    }
                 } else {
                     print("Error: \(error?.localizedDescription ?? "No data")")
                     self.navigationController?.popViewController(animated: true)

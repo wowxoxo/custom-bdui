@@ -29,6 +29,12 @@ Should return screen_id: "auth".
 
 
 ```
+curl -X POST http://127.0.0.1:8000/bdui-dsl/fsm/next -H "Content-Type: application/json" -d '{"user_id": "test_user", "event": "auth_fail"}'
+```
+Should return screen_id: "not_enough_rights"
+
+
+```
 curl -X POST http://127.0.0.1:8000/bdui-dsl/fsm/next -H "Content-Type: application/json" -d '{"user_id": "test_user", "event": "auth_success"}'
 ```
 Should return screen_id: "services"

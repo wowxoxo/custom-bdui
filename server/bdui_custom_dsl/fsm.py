@@ -22,6 +22,7 @@ class RegistrationFSM:
             initial="need_register",
             transitions=[
                 {"trigger": "tap_register", "source": "need_register", "dest": "auth"},
+                {"trigger": "tap_register", "source": "not_enough_rights", "dest": "auth"},  # allow another try
                 {"trigger": "auth_success", "source": "auth", "dest": "services"},
                 {"trigger": "auth_fail", "source": "auth", "dest": "not_enough_rights"},
                 {"trigger": "back", "source": ["auth", "not_enough_rights"], "dest": "need_register"},

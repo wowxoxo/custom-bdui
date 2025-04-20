@@ -111,9 +111,24 @@ def next_screen(request):
     elif state == "services":
         main_container.add_child(Text("Доступные услуги", font_size=22, bold=True))
         main_container.add_child(Text("Выберите услугу для продолжения", font_size=16))
+        main_container.add_child(
+            Container(orientation="vertical", padding_top=20).add_child(
+                Text("Услуга №1", font_size=18, color="#1E90FF", action="request", event="select_service1")
+            )
+        )
+        main_container.add_child(
+            Container(orientation="vertical", padding_top=10).add_child(
+                Text("Услуга №2", font_size=18, color="#1E90FF", action="request", event="select_service2")
+            )
+        )
     elif state == "not_enough_rights":
         main_container.add_child(Text("Недостаточно прав", font_size=22, bold=True))
         main_container.add_child(Text("Невозможно продолжить работу", font_size=16))
+        main_container.add_child(
+            Container(orientation="vertical", padding_top=20).add_child(
+                Text("Попробовать снова", font_size=18, color="#1E90FF", action="request", event="tap_register")
+            )
+        )
 
     screen.add_component(main_container)
     response_data = screen.to_dict()
