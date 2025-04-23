@@ -97,11 +97,11 @@ def next_screen(request):
         main_container.add_child(
             Image(uri="https://wowxoxo.github.io/coolapp-auth-form/key.svg", width=100, height=50)
         )
-        main_container.add_child(Text("Зарегистрируйтесь в приложении «CoolApp»", font_size=22, bold=True))
-        main_container.add_child(Text("Первичная регистрация необходима для работы в приложении", font_size=16))
+        main_container.add_child(Text("Зарегистрируйтесь в приложении «CoolApp»", font_size=22, bold=True, alignment="center"))
+        main_container.add_child(Text("Первичная регистрация необходима для работы в приложении", font_size=16, alignment="center"))
         main_container.add_child(
             Container(orientation="vertical", padding_top=20).add_child(
-                Button(text="Зарегистрироваться", action="request", event="tap_register")
+                Button(text="Зарегистрироваться", action="request", event="tap_register", bottomAligned=True)
             )
         )
     elif state == "auth":

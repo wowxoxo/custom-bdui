@@ -100,6 +100,7 @@ class Button(Component):
     target: Optional[str] = None
     font_size: int = 18
     color: str = "#1E90FF"
+    bottomAligned: bool = False
 
     def to_dict(self) -> dict:
         properties = {
@@ -114,6 +115,8 @@ class Button(Component):
             properties["uri"] = self.uri
         if self.target is not None:
             properties["target"] = self.target
+        if self.bottomAligned:
+             properties["bottomAligned"] = True
         return {"type": "button", "properties": properties}
     
 @dataclass
