@@ -5,50 +5,70 @@ class BDUIRenderer {
     weak var view: UIView? // Track the root view for safe area handling
 
     func render(json: [String: Any], into container: UIView, eventHandler: @escaping (String, String?) -> Void) {
+        // Store the root container
+        self.view = container
+        
         // Clear existing subviews
         container.subviews.forEach { $0.removeFromSuperview() }
         viewMap.removeAll()
         
         guard let components = json["components"] as? [[String: Any]] else { return }
-        var lastView: UIView?
+
+        // Create a stack view for the root container
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.alignment = .fill
+        stackView.distribution = .fill
+        stackView.spacing = 0
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(stackView)
+
+        // Pin the stack view to the safe area
+        let topAnchor = container === self.view ? container.safeAreaLayoutGuide.topAnchor : container.topAnchor
+        let bottomAnchor = container === self.view ? container.safeAreaLayoutGuide.bottomAnchor : container.bottomAnchor
+        NSLayoutConstraint.activate([
+            stackView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            stackView.topAnchor.constraint(equalTo: topAnchor),
+            stackView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+
+        // Track the button that needs to be bottom-aligned
+        var bottomAlignedButton: UIButton?
 
         for component in components {
             guard let type = component["type"] as? String,
                   let properties = component["properties"] as? [String: Any] else { continue }
 
             switch type {
-                
             case "container":
                 let paddingTop = CGFloat(properties["paddingTop"] as? Int ?? 0)
                 let paddingHorizontal = CGFloat(properties["padding"] as? Int ?? 0)
                 let subContainer = UIView()
-
+                
                 if let hex = properties["backgroundColor"] as? String {
                     subContainer.backgroundColor = UIColor(hex: hex)
                 }
                 subContainer.translatesAutoresizingMaskIntoConstraints = false
-                container.addSubview(subContainer)
+                
+                // Add padding views if needed
+                if paddingTop > 0 {
+                    let spacer = UIView()
+                    stackView.addArrangedSubview(spacer)
+                    spacer.heightAnchor.constraint(equalToConstant: paddingTop).isActive = true
+                }
+
+                stackView.addArrangedSubview(subContainer)
+
+                // Apply horizontal padding
+                NSLayoutConstraint.activate([
+                    subContainer.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: paddingHorizontal),
+                    subContainer.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -paddingHorizontal)
+                ])
 
                 if let children = component["children"] as? [[String: Any]] {
                     render(json: ["components": children], into: subContainer, eventHandler: eventHandler)
                 }
-
-                // Use safeAreaLayoutGuide for top-level containers
-                let topAnchor = container === self.view ? container.safeAreaLayoutGuide.topAnchor : (lastView?.bottomAnchor ?? container.topAnchor)
-                NSLayoutConstraint.activate([
-                    subContainer.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: paddingHorizontal),
-                    subContainer.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -paddingHorizontal),
-                    subContainer.topAnchor.constraint(equalTo: topAnchor, constant: paddingTop)
-                ])
-
-                if let bottomChild = subContainer.subviews.last {
-                    NSLayoutConstraint.activate([
-                        subContainer.bottomAnchor.constraint(equalTo: bottomChild.bottomAnchor, constant: paddingTop)
-                    ])
-                }
-
-                lastView = subContainer
-
 
             case "text":
                 let label = UILabel()
@@ -60,17 +80,21 @@ class BDUIRenderer {
                 label.textAlignment = NSTextAlignment(from: properties["alignment"] as? String ?? "left")
                 label.numberOfLines = 0
                 label.translatesAutoresizingMaskIntoConstraints = false
-                container.addSubview(label)
 
                 let paddingTop = CGFloat(properties["paddingTop"] as? Int ?? 0)
-                let topAnchor = container === self.view ? container.safeAreaLayoutGuide.topAnchor : (lastView?.bottomAnchor ?? container.topAnchor)
-                NSLayoutConstraint.activate([
-                    label.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 20),
-                    label.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -20),
-                    label.topAnchor.constraint(equalTo: topAnchor, constant: paddingTop)
-                ])
+                if paddingTop > 0 {
+                    let spacer = UIView()
+                    stackView.addArrangedSubview(spacer)
+                    spacer.heightAnchor.constraint(equalToConstant: paddingTop).isActive = true
+                }
 
-                lastView = label
+                stackView.addArrangedSubview(label)
+
+                // Apply leading/trailing constraints directly to the label
+                NSLayoutConstraint.activate([
+                    label.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: 20),
+                    label.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -20)
+                ])
 
             case "button":
                 let button = UIButton(type: .system)
@@ -83,6 +107,7 @@ class BDUIRenderer {
                 button.addAction(UIAction { _ in
                     if action == "toggle", let target = target, let targetView = self.viewMap[target] as? UIButton {
                         targetView.isEnabled.toggle()
+//                        targetView.isActive.toggle()
                     } else if action == "request", let event = event {
                         eventHandler(action!, event)
                     } else if action == "webview" {
@@ -90,7 +115,6 @@ class BDUIRenderer {
                     }
                 }, for: .touchUpInside)
                 button.translatesAutoresizingMaskIntoConstraints = false
-                container.addSubview(button)
 
                 if let target = target {
                     viewMap[target] = button
@@ -98,21 +122,24 @@ class BDUIRenderer {
 
                 let paddingTop = CGFloat(properties["paddingTop"] as? Int ?? 0)
                 let bottomAligned = properties["bottomAligned"] as? Bool ?? false
+
                 if bottomAligned && container === self.view {
-                    NSLayoutConstraint.activate([
-                        button.centerXAnchor.constraint(equalTo: container.centerXAnchor),
-                        button.bottomAnchor.constraint(equalTo: container.safeAreaLayoutGuide.bottomAnchor, constant: -20),
-                        button.widthAnchor.constraint(equalToConstant: 200)
-                    ])
+                    // Store the button to pin it to the bottom later
+                    bottomAlignedButton = button
                 } else {
+                    if paddingTop > 0 {
+                        let spacer = UIView()
+                        stackView.addArrangedSubview(spacer)
+                        spacer.heightAnchor.constraint(equalToConstant: paddingTop).isActive = true
+                    }
+                    stackView.addArrangedSubview(button)
+
+                    // Center the button horizontally
                     NSLayoutConstraint.activate([
-                        button.centerXAnchor.constraint(equalTo: container.centerXAnchor),
-                        button.topAnchor.constraint(equalTo: lastView?.bottomAnchor ?? container.topAnchor, constant: paddingTop),
+                        button.centerXAnchor.constraint(equalTo: stackView.centerXAnchor),
                         button.widthAnchor.constraint(equalToConstant: 200)
                     ])
                 }
-
-                lastView = button
 
             case "image":
                 let imageView = UIImageView()
@@ -133,24 +160,45 @@ class BDUIRenderer {
                 }
                 imageView.contentMode = .scaleAspectFit
                 imageView.translatesAutoresizingMaskIntoConstraints = false
-                container.addSubview(imageView)
+
+                let paddingTop = CGFloat(properties["paddingTop"] as? Int ?? 0)
+                if paddingTop > 0 {
+                    let spacer = UIView()
+                    stackView.addArrangedSubview(spacer)
+                    spacer.heightAnchor.constraint(equalToConstant: paddingTop).isActive = true
+                }
+
+                stackView.addArrangedSubview(imageView)
 
                 let width = CGFloat(properties["width"] as? Int ?? 100)
                 let height = CGFloat(properties["height"] as? Int ?? 50)
-                let paddingTop = CGFloat(properties["paddingTop"] as? Int ?? 0)
-                let topAnchor = container === self.view ? container.safeAreaLayoutGuide.topAnchor : (lastView?.bottomAnchor ?? container.topAnchor)
                 NSLayoutConstraint.activate([
-                    imageView.centerXAnchor.constraint(equalTo: container.centerXAnchor),
-                    imageView.topAnchor.constraint(equalTo: topAnchor, constant: paddingTop),
+                    imageView.centerXAnchor.constraint(equalTo: stackView.centerXAnchor),
                     imageView.widthAnchor.constraint(equalToConstant: width),
                     imageView.heightAnchor.constraint(equalToConstant: height)
                 ])
 
-                lastView = imageView
-
             default:
                 break
             }
+        }
+
+        // Handle bottom-aligned button
+        if let button = bottomAlignedButton {
+            // Remove the button from the stack view if it was added
+            stackView.arrangedSubviews.first(where: { $0 === button })?.removeFromSuperview()
+            
+            // Add the button directly to the container and pin to the bottom
+            container.addSubview(button)
+            NSLayoutConstraint.activate([
+                button.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+                button.bottomAnchor.constraint(equalTo: container.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+                button.widthAnchor.constraint(equalToConstant: 200)
+            ])
+
+            // Add a spacer to the stack view to push other content up
+            let spacer = UIView()
+            stackView.addArrangedSubview(spacer)
         }
     }
 }
