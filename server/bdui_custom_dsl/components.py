@@ -93,7 +93,6 @@ class Container(Component):
 
 @dataclass
 class Button(Component):
-    text: str
     action: str  # "request", "toggle", "native"
     event: Optional[str] = None
     uri: Optional[str] = None
@@ -101,14 +100,20 @@ class Button(Component):
     font_size: int = 18
     color: str = "#1E90FF"
     bottomAligned: bool = False
+    text: Optional[str] = None
+    background_color: Optional[str] = None
+    border_radius: Optional[int] = None
+    image_uri: Optional[str] = None
+    width: Optional[int] = None
 
     def to_dict(self) -> dict:
         properties = {
-            "text": self.text,
             "action": self.action,
             "font_size": self.font_size,
             "color": self.color
         }
+        if self.text is not None:
+            properties["text"] = self.text
         if self.event is not None:
             properties["event"] = self.event
         if self.uri is not None:
@@ -116,7 +121,15 @@ class Button(Component):
         if self.target is not None:
             properties["target"] = self.target
         if self.bottomAligned:
-             properties["bottomAligned"] = True
+            properties["bottomAligned"] = True
+        if self.background_color is not None:
+            properties["backgroundColor"] = self.background_color
+        if self.border_radius is not None:
+            properties["borderRadius"] = self.border_radius
+        if self.image_uri is not None:
+            properties["imageUri"] = self.image_uri
+        if self.width is not None:
+            properties["width"] = self.width
         return {"type": "button", "properties": properties}
     
 @dataclass
@@ -144,6 +157,10 @@ class Image(Component):
     uri: str
     width: Optional[int] = None
     height: Optional[int] = None
+    margin_top: Optional[int] = None
+    margin_bottom: Optional[int] = None
+    margin_left: Optional[int] = None
+    margin_right: Optional[int] = None
 
     def to_dict(self) -> dict:
         properties = {"uri": self.uri}
@@ -151,4 +168,12 @@ class Image(Component):
             properties["width"] = self.width
         if self.height is not None:
             properties["height"] = self.height
+        if self.margin_top is not None:
+            properties["marginTop"] = self.margin_top
+        if self.margin_bottom is not None:
+            properties["marginBottom"] = self.margin_bottom
+        if self.margin_left is not None:
+            properties["marginLeft"] = self.margin_left
+        if self.margin_right is not None:
+            properties["marginRight"] = self.margin_right
         return {"type": "image", "properties": properties}

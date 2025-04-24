@@ -51,7 +51,6 @@ class BDUIRenderer {
                 }
                 subContainer.translatesAutoresizingMaskIntoConstraints = false
                 
-                // Add padding views if needed
                 if paddingTop > 0 {
                     let spacer = UIView()
                     stackView.addArrangedSubview(spacer)
@@ -98,16 +97,44 @@ class BDUIRenderer {
 
             case "button":
                 let button = UIButton(type: .system)
-                button.setTitle(properties["text"] as? String, for: .normal)
-                button.titleLabel?.font = .systemFont(ofSize: CGFloat(properties["font_size"] as? Int ?? 18))
-                button.setTitleColor(UIColor(hex: properties["color"] as? String ?? "#1E90FF"), for: .normal)
+                
+                // Check if an image should be used instead of text
+                if let imageUri = properties["imageUri"] as? String, let url = URL(string: imageUri) {
+                    URLSession.shared.dataTask(with: url) { data, response, error in
+                        if let error = error {
+                            print("Error loading button image: \(error.localizedDescription)")
+                            return
+                        }
+                        if let data = data, let image = UIImage(data: data) {
+                            DispatchQueue.main.async {
+                                button.setImage(image, for: .normal)
+                                button.imageView?.contentMode = .scaleAspectFit
+                            }
+                        }
+                    }.resume()
+                } else {
+                    button.setTitle(properties["text"] as? String, for: .normal)
+                    button.titleLabel?.font = .systemFont(ofSize: CGFloat(properties["font_size"] as? Int ?? 18))
+                    button.setTitleColor(UIColor(hex: properties["color"] as? String ?? "#1E90FF"), for: .normal)
+                }
+
+                // Apply background color
+                if let backgroundColor = properties["backgroundColor"] as? String {
+                    button.backgroundColor = UIColor(hex: backgroundColor)
+                }
+
+                // Apply border radius
+                if let borderRadius = properties["borderRadius"] as? Int {
+                    button.layer.cornerRadius = CGFloat(borderRadius)
+                    button.clipsToBounds = true
+                }
+
                 let action = properties["action"] as? String
                 let event = properties["event"] as? String
                 let target = properties["target"] as? String
                 button.addAction(UIAction { _ in
                     if action == "toggle", let target = target, let targetView = self.viewMap[target] as? UIButton {
                         targetView.isEnabled.toggle()
-//                        targetView.isActive.toggle()
                     } else if action == "request", let event = event {
                         eventHandler(action!, event)
                     } else if action == "webview" {
@@ -124,7 +151,6 @@ class BDUIRenderer {
                 let bottomAligned = properties["bottomAligned"] as? Bool ?? false
 
                 if bottomAligned && container === self.view {
-                    // Store the button to pin it to the bottom later
                     bottomAlignedButton = button
                 } else {
                     if paddingTop > 0 {
@@ -143,40 +169,69 @@ class BDUIRenderer {
 
             case "image":
                 let imageView = UIImageView()
+                imageView.backgroundColor = .lightGray // Visual placeholder while loading
                 if let uri = properties["uri"] as? String, let url = URL(string: uri) {
                     URLSession.shared.dataTask(with: url) { data, response, error in
                         if let error = error {
                             print("Error loading image: \(error.localizedDescription)")
+                            DispatchQueue.main.async {
+                                imageView.backgroundColor = .red // Indicate failure
+                            }
                             return
                         }
                         if let data = data, let image = UIImage(data: data) {
                             DispatchQueue.main.async {
                                 imageView.image = image
+                                imageView.backgroundColor = nil // Clear placeholder
                             }
                         }
                     }.resume()
                 } else {
                     print("Invalid image URI: \(properties["uri"] ?? "none")")
+                    imageView.backgroundColor = .red // Indicate invalid URI
                 }
                 imageView.contentMode = .scaleAspectFit
                 imageView.translatesAutoresizingMaskIntoConstraints = false
 
+                // Handle margins
+                let marginTop = CGFloat(properties["marginTop"] as? Int ?? 0)
+                let marginBottom = CGFloat(properties["marginBottom"] as? Int ?? 0)
+                let marginLeft = CGFloat(properties["marginLeft"] as? Int ?? 0)
+                let marginRight = CGFloat(properties["marginRight"] as? Int ?? 0)
+
                 let paddingTop = CGFloat(properties["paddingTop"] as? Int ?? 0)
-                if paddingTop > 0 {
+
+                // Add top margin/padding
+                if marginTop > 0 || paddingTop > 0 {
                     let spacer = UIView()
                     stackView.addArrangedSubview(spacer)
-                    spacer.heightAnchor.constraint(equalToConstant: paddingTop).isActive = true
+                    spacer.heightAnchor.constraint(equalToConstant: marginTop + paddingTop).isActive = true
                 }
 
-                stackView.addArrangedSubview(imageView)
+                // Wrap the image view in a container to apply horizontal margins
+                let imageContainer = UIView()
+                imageContainer.translatesAutoresizingMaskIntoConstraints = false
+                imageContainer.addSubview(imageView)
+                stackView.addArrangedSubview(imageContainer)
 
                 let width = CGFloat(properties["width"] as? Int ?? 100)
                 let height = CGFloat(properties["height"] as? Int ?? 50)
                 NSLayoutConstraint.activate([
-                    imageView.centerXAnchor.constraint(equalTo: stackView.centerXAnchor),
+                    imageView.centerXAnchor.constraint(equalTo: imageContainer.centerXAnchor),
+                    imageView.topAnchor.constraint(equalTo: imageContainer.topAnchor),
+                    imageView.bottomAnchor.constraint(equalTo: imageContainer.bottomAnchor),
                     imageView.widthAnchor.constraint(equalToConstant: width),
-                    imageView.heightAnchor.constraint(equalToConstant: height)
+                    imageView.heightAnchor.constraint(equalToConstant: height),
+                    imageContainer.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: marginLeft),
+                    imageContainer.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -marginRight)
                 ])
+
+                // Add bottom margin
+                if marginBottom > 0 {
+                    let spacer = UIView()
+                    stackView.addArrangedSubview(spacer)
+                    spacer.heightAnchor.constraint(equalToConstant: marginBottom).isActive = true
+                }
 
             default:
                 break
