@@ -33,8 +33,9 @@ class BDUIRenderer {
             stackView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
 
-        // Track the button that needs to be bottom-aligned
+        // Track the button that needs to be bottom-aligned, along with its properties
         var bottomAlignedButton: UIButton?
+        var bottomAlignedButtonProperties: (fullWidth: Bool, marginLeft: CGFloat, marginRight: CGFloat, width: CGFloat)?
 
         for component in components {
             guard let type = component["type"] as? String,
@@ -96,9 +97,26 @@ class BDUIRenderer {
                 ])
 
             case "button":
-                let button = UIButton(type: .system)
-                
-                // Check if an image should be used instead of text
+                // Declare padding variables first
+                let buttonPadding = CGFloat(properties["padding"] as? Int ?? 0)
+                let buttonPaddingTop = CGFloat(properties["paddingTop"] as? Int ?? (properties["padding"] as? Int ?? 0))
+                let buttonPaddingBottom = CGFloat(properties["paddingBottom"] as? Int ?? (properties["padding"] as? Int ?? 0))
+                let buttonPaddingLeft = CGFloat(properties["paddingLeft"] as? Int ?? (properties["padding"] as? Int ?? 0))
+                let buttonPaddingRight = CGFloat(properties["paddingRight"] as? Int ?? (properties["padding"] as? Int ?? 0))
+
+                // Create the button configuration
+                var buttonConfig = UIButton.Configuration.plain()
+                buttonConfig.contentInsets = NSDirectionalEdgeInsets(
+                    top: buttonPaddingTop,
+                    leading: buttonPaddingLeft,
+                    bottom: buttonPaddingBottom,
+                    trailing: buttonPaddingRight
+                )
+
+                // Create the button
+                let button = UIButton(configuration: buttonConfig)
+
+                // Load image if imageUri is provided
                 if let imageUri = properties["imageUri"] as? String, let url = URL(string: imageUri) {
                     URLSession.shared.dataTask(with: url) { data, response, error in
                         if let error = error {
@@ -107,15 +125,28 @@ class BDUIRenderer {
                         }
                         if let data = data, let image = UIImage(data: data) {
                             DispatchQueue.main.async {
-                                button.setImage(image, for: .normal)
-                                button.imageView?.contentMode = .scaleAspectFit
+                                var updatedConfig = button.configuration ?? UIButton.Configuration.plain()
+                                updatedConfig.image = image
+                                updatedConfig.imagePlacement = .all
+                                updatedConfig.contentInsets = NSDirectionalEdgeInsets(
+                                    top: buttonPaddingTop,
+                                    leading: buttonPaddingLeft,
+                                    bottom: buttonPaddingBottom,
+                                    trailing: buttonPaddingRight
+                                )
+                                button.configuration = updatedConfig
                             }
                         }
                     }.resume()
                 } else {
-                    button.setTitle(properties["text"] as? String, for: .normal)
-                    button.titleLabel?.font = .systemFont(ofSize: CGFloat(properties["font_size"] as? Int ?? 18))
-                    button.setTitleColor(UIColor(hex: properties["color"] as? String ?? "#1E90FF"), for: .normal)
+                    buttonConfig.title = properties["text"] as? String
+                    buttonConfig.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
+                        var outgoing = incoming
+                        outgoing.font = .systemFont(ofSize: CGFloat(properties["font_size"] as? Int ?? 18))
+                        outgoing.foregroundColor = UIColor(hex: properties["color"] as? String ?? "#1E90FF")
+                        return outgoing
+                    }
+                    button.configuration = buttonConfig
                 }
 
                 // Apply background color
@@ -149,22 +180,49 @@ class BDUIRenderer {
 
                 let paddingTop = CGFloat(properties["paddingTop"] as? Int ?? 0)
                 let bottomAligned = properties["bottomAligned"] as? Bool ?? false
+                let fullWidth = properties["fullWidth"] as? Bool ?? false
+                let marginLeft = CGFloat(properties["marginLeft"] as? Int ?? 0)
+                let marginRight = CGFloat(properties["marginRight"] as? Int ?? 0)
+                let width = CGFloat(properties["width"] as? Int ?? 200)
 
                 if bottomAligned && container === self.view {
                     bottomAlignedButton = button
+                    // Store properties for the bottom-aligned button
+                    bottomAlignedButtonProperties = (fullWidth: fullWidth, marginLeft: marginLeft, marginRight: marginRight, width: width)
                 } else {
                     if paddingTop > 0 {
                         let spacer = UIView()
                         stackView.addArrangedSubview(spacer)
                         spacer.heightAnchor.constraint(equalToConstant: paddingTop).isActive = true
                     }
-                    stackView.addArrangedSubview(button)
 
-                    // Center the button horizontally
-                    NSLayoutConstraint.activate([
-                        button.centerXAnchor.constraint(equalTo: stackView.centerXAnchor),
-                        button.widthAnchor.constraint(equalToConstant: 200)
-                    ])
+                    // Wrap the button in a container to apply margins
+                    let buttonContainer = UIView()
+                    buttonContainer.translatesAutoresizingMaskIntoConstraints = false
+                    buttonContainer.addSubview(button)
+                    stackView.addArrangedSubview(buttonContainer)
+
+                    if fullWidth {
+                        // Stretch the button to fill the container width, minus margins
+                        NSLayoutConstraint.activate([
+                            button.leadingAnchor.constraint(equalTo: buttonContainer.leadingAnchor),
+                            button.trailingAnchor.constraint(equalTo: buttonContainer.trailingAnchor),
+                            button.topAnchor.constraint(equalTo: buttonContainer.topAnchor),
+                            button.bottomAnchor.constraint(equalTo: buttonContainer.bottomAnchor),
+                            buttonContainer.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: marginLeft),
+                            buttonContainer.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -marginRight)
+                        ])
+                    } else {
+                        // Center the button with a fixed width
+                        NSLayoutConstraint.activate([
+                            button.centerXAnchor.constraint(equalTo: buttonContainer.centerXAnchor),
+                            button.topAnchor.constraint(equalTo: buttonContainer.topAnchor),
+                            button.bottomAnchor.constraint(equalTo: buttonContainer.bottomAnchor),
+                            button.widthAnchor.constraint(equalToConstant: width),
+                            buttonContainer.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: marginLeft),
+                            buttonContainer.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -marginRight)
+                        ])
+                    }
                 }
 
             case "image":
@@ -239,17 +297,28 @@ class BDUIRenderer {
         }
 
         // Handle bottom-aligned button
-        if let button = bottomAlignedButton {
+        if let button = bottomAlignedButton, let props = bottomAlignedButtonProperties {
             // Remove the button from the stack view if it was added
             stackView.arrangedSubviews.first(where: { $0 === button })?.removeFromSuperview()
             
             // Add the button directly to the container and pin to the bottom
             container.addSubview(button)
-            NSLayoutConstraint.activate([
-                button.centerXAnchor.constraint(equalTo: container.centerXAnchor),
-                button.bottomAnchor.constraint(equalTo: container.safeAreaLayoutGuide.bottomAnchor, constant: -20),
-                button.widthAnchor.constraint(equalToConstant: 200)
-            ])
+            
+            if props.fullWidth {
+                // Stretch the button to fill the container width, minus margins
+                NSLayoutConstraint.activate([
+                    button.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: props.marginLeft),
+                    button.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -props.marginRight),
+                    button.bottomAnchor.constraint(equalTo: container.safeAreaLayoutGuide.bottomAnchor, constant: -20)
+                ])
+            } else {
+                // Center the button with a fixed width
+                NSLayoutConstraint.activate([
+                    button.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+                    button.bottomAnchor.constraint(equalTo: container.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+                    button.widthAnchor.constraint(equalToConstant: props.width)
+                ])
+            }
 
             // Add a spacer to the stack view to push other content up
             let spacer = UIView()

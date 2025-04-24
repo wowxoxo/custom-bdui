@@ -105,6 +105,14 @@ class Button(Component):
     border_radius: Optional[int] = None
     image_uri: Optional[str] = None
     width: Optional[int] = None
+    padding: Optional[int] = None
+    padding_top: Optional[int] = None
+    padding_bottom: Optional[int] = None
+    padding_left: Optional[int] = None
+    padding_right: Optional[int] = None
+    full_width: bool = False
+    margin_left: Optional[int] = None
+    margin_right: Optional[int] = None
 
     def to_dict(self) -> dict:
         properties = {
@@ -130,6 +138,22 @@ class Button(Component):
             properties["imageUri"] = self.image_uri
         if self.width is not None:
             properties["width"] = self.width
+        if self.padding is not None:
+            properties["padding"] = self.padding
+        if self.padding_top is not None:
+            properties["paddingTop"] = self.padding_top
+        if self.padding_bottom is not None:
+            properties["paddingBottom"] = self.padding_bottom
+        if self.padding_left is not None:
+            properties["paddingLeft"] = self.padding_left
+        if self.padding_right is not None:
+            properties["paddingRight"] = self.padding_right
+        if self.full_width:
+            properties["fullWidth"] = True
+        if self.margin_left is not None:
+            properties["marginLeft"] = self.margin_left
+        if self.margin_right is not None:
+            properties["marginRight"] = self.margin_right
         return {"type": "button", "properties": properties}
     
 @dataclass

@@ -99,14 +99,15 @@ def next_screen(request):
         )
         main_container.add_child(Text("Зарегистрируйтесь в приложении «CoolApp»", font_size=22, bold=True, alignment="center"))
         main_container.add_child(Text("Первичная регистрация необходима для работы в приложении", font_size=16, alignment="center", padding_top=10))
+        # TODO: remove
+        # main_container.add_child(
+        #     Container(orientation="vertical", padding_top=20).add_child(
+        #         Button(image_uri="https://wowxoxo.github.io/coolapp-auth-form/copy.png", action="request", event="tap_register", background_color="#E6F0FA", border_radius=10, width=24)
+        #     )
+        # )
         main_container.add_child(
             Container(orientation="vertical", padding_top=20).add_child(
-                Button(image_uri="https://wowxoxo.github.io/coolapp-auth-form/copy.png", action="request", event="tap_register", background_color="#E6F0FA", border_radius=10, width=24)
-            )
-        )
-        main_container.add_child(
-            Container(orientation="vertical", padding_top=20).add_child(
-                Button(text="Зарегистрироваться", action="request", event="tap_register", bottomAligned=True, background_color="#E6F0FA", border_radius=10)
+                Button(text="Зарегистрироваться", action="request", event="tap_register", bottomAligned=True, background_color="#1E90FF", border_radius=10, full_width=True, margin_right=10, padding=10, color='#ffffff')
             )
         )
     elif state == "auth":
