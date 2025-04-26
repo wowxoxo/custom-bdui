@@ -144,3 +144,95 @@ def next_screen(request):
     response_data["deeplink"] = f"coolapp://{state}"
 
     return JsonResponse(response_data, safe=False, json_dumps_params={"ensure_ascii": False})
+
+@csrf_exempt
+def current_state(request):
+    if request.method != "POST":
+        return HttpResponse("Method not allowed", status=405)
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return HttpResponse("Invalid JSON", status=400)
+
+    user_id = data.get("user_id", "test_user")
+    fsm = fsm_manager.get_or_create_fsm(user_id)
+    state = fsm.get_state()
+
+    screen = Screen(screen_id=state)
+    main_container = Container(orientation="vertical", padding=15)
+
+    if state == "need_register":
+        main_container.add_child(
+            Image(uri="https://wowxoxo.github.io/coolapp-auth-form/key.png", width=168, height=180, margin_top=20, margin_bottom=20)
+        )
+        main_container.add_child(Text("Зарегистрируйтесь в приложении «CoolApp»", font_size=22, bold=True, alignment="center"))
+        main_container.add_child(Text("Первичная регистрация необходима для работы в приложении", font_size=16, alignment="center", padding_top=10))
+        main_container.add_child(
+            Container(orientation="vertical", padding_top=20).add_child(
+                Button(
+                    text="Зарегистрироваться",
+                    action="request",
+                    event="tap_register",
+                    bottomAligned=True,
+                    background_color="#1E90FF",
+                    border_radius=10,
+                    full_width=True,
+                    margin_right=10,
+                    padding=10,
+                    color='#ffffff'
+                )
+            )
+        )
+    elif state == "auth":
+        main_container.add_child(Text("Загрузка авторизации...", font_size=16))
+        main_container.add_child(
+            Container(orientation="vertical", padding_top=20).add_child(
+                Button(text="Webview", action="webview", uri="https://wowxoxo.github.io/coolapp-auth-form")
+            )
+        )
+    elif state == "services":
+        main_container.add_child(Text("Доступные услуги", font_size=22, bold=True, alignment="center"))
+        main_container.add_child(Text("Выберите услугу для продолжения", font_size=16, alignment="center"))
+        main_container.add_child(
+            Container(orientation="vertical", padding_top=20).add_child(
+                Button(
+                    text="Услуга №1",
+                    action="request",
+                    event="select_service1",
+                    font_size=18,
+                    color="#1E90FF",
+                    width=200,
+                    margin_left=20,
+                    margin_right=20
+                )
+            )
+        )
+        main_container.add_child(
+            Container(orientation="vertical", padding_top=10).add_child(
+                Button(
+                    text="Услуга №2",
+                    action="request",
+                    event="select_service2",
+                    font_size=18,
+                    color="#1E90FF",
+                    width=200,
+                    margin_left=20,
+                    margin_right=20
+                )
+            )
+        )
+    elif state == "not_enough_rights":
+        main_container.add_child(Text("Недостаточно прав", font_size=22, bold=True))
+        main_container.add_child(Text("Невозможно продолжить работу", font_size=16))
+        main_container.add_child(
+            Container(orientation="vertical", padding_top=20).add_child(
+                Button(text="Попробовать снова", action="request", event="tap_register")
+            )
+        )
+
+    screen.add_component(main_container)
+    response_data = screen.to_dict()
+    response_data["deeplink"] = f"coolapp://{state}"
+
+    return JsonResponse(response_data, safe=False, json_dumps_params={"ensure_ascii": False})
