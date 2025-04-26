@@ -1,67 +1,93 @@
 import UIKit
 
 class NotEnoughRightsViewController: UIViewController {
-    private var titleLabel: UILabel!
-    private var subtitleLabel: UILabel!
-    private var retryButton: UIButton!
+    private let renderer = BDUIRenderer()
+    private var containerView: UIView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Недостаточно прав"
         view.backgroundColor = .white
 
-        titleLabel = UILabel()
-        titleLabel.text = "Недостаточно прав"
-        titleLabel.font = .boldSystemFont(ofSize: 22)
-        titleLabel.textAlignment = .center
-        titleLabel.numberOfLines = 0
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(titleLabel)
+        containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(containerView)
 
-        subtitleLabel = UILabel()
-        subtitleLabel.text = "Невозможно продолжить работу"
-        subtitleLabel.font = .systemFont(ofSize: 16)
-        subtitleLabel.textAlignment = .center
-        subtitleLabel.numberOfLines = 0
-        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(subtitleLabel)
-
-        retryButton = UIButton(type: .system)
-        retryButton.setTitle("Попробовать снова", for: .normal)
-        retryButton.titleLabel?.font = .systemFont(ofSize: 18)
-        retryButton.setTitleColor(.systemBlue, for: .normal)
-        retryButton.addTarget(self, action: #selector(retryTapped), for: .touchUpInside)
-        retryButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(retryButton)
-
+        // Pin the container view to the safe area
         NSLayoutConstraint.activate([
-            titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-
-            subtitleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
-            subtitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            subtitleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-
-            retryButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            retryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
-            retryButton.widthAnchor.constraint(equalToConstant: 200)
+            containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            containerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            containerView.topAnchor.constraint(equalTo: view.topAnchor),
+            containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+
+        fetchUI()
     }
 
-    @objc func retryTapped() {
-        sendEventToBackend(event: "tap_register") { screenId in
-            if screenId == "auth" {
-                DispatchQueue.main.async {
-                    let vc = WebviewAuthViewController()
-                    self.navigationController?.pushViewController(vc, animated: true)
-                }
-            } else {
-                print("Unexpected screen: \(screenId ?? "none")")
+    private func fetchUI() {
+        showLoading(in: containerView)
+
+        guard let url = URL(string: "http://127.0.0.1:8000/bdui-dsl/fsm/current") else {
+            showError(in: containerView, error: nil, urlString: "Invalid URL", method: "GET", requestData: nil) {
+                self.fetchUI()
             }
+            return
         }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let body: [String: Any] = ["user_id": "test_user", "screen_id": "not_enough_rights"]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+
+        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            guard let self = self else { return }
+
+            if let error = error {
+                DispatchQueue.main.async {
+                    self.showError(in: self.containerView, error: error, urlString: url.absoluteString, method: "POST", requestData: request.httpBody) {
+                        self.fetchUI()
+                    }
+                }
+                return
+            }
+
+            guard let data = data,
+                  let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+                DispatchQueue.main.async {
+                    self.showError(in: self.containerView, error: nil, urlString: url.absoluteString, method: "POST", requestData: request.httpBody) {
+                        self.fetchUI()
+                    }
+                }
+                return
+            }
+
+            DispatchQueue.main.async {
+                self.hideLoading(in: self.containerView)
+                self.renderUI(json: json)
+            }
+        }.resume()
+    }
+
+    private func renderUI(json: [String: Any]) {
+        print("Fetched JSON: \(json)")
+        
+        renderer.render(json: json["screen"] as! [String : Any], into: containerView, eventHandler: { [weak self] action, event in
+            guard let self = self else { return }
+
+            if action == "request", let event = event {
+                self.sendEventToBackend(event: event) { screenId in
+                    if screenId == "auth" {
+                        DispatchQueue.main.async {
+                            let vc = WebviewAuthViewController()
+                            self.navigationController?.pushViewController(vc, animated: true)
+                        }
+                    } else {
+                        print("Unexpected screen: \(screenId ?? "none")")
+                    }
+                }
+            }
+        })
     }
 
     private func sendEventToBackend(event: String, completion: @escaping (String?) -> Void) {
