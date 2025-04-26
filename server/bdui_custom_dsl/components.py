@@ -60,6 +60,14 @@ class Container(Component):
     padding_bottom: Optional[int] = None
     padding_left: Optional[int] = None
     padding_right: Optional[int] = None
+    margin_left: Optional[int] = None
+    margin_right: Optional[int] = None
+    background_color: Optional[str] = None
+    border_radius: Optional[int] = None
+    shadow_opacity: Optional[float] = None
+    shadow_radius: Optional[float] = None
+    shadow_offset_x: Optional[float] = None
+    shadow_offset_y: Optional[float] = None
     children: List[Component] = field(default_factory=list)
 
     def __post_init__(self):
@@ -84,6 +92,22 @@ class Container(Component):
             properties["paddingLeft"] = self.padding_left
         if self.padding_right is not None:
             properties["paddingRight"] = self.padding_right
+        if self.margin_left is not None:
+            properties["marginLeft"] = self.margin_left
+        if self.margin_right is not None:
+            properties["marginRight"] = self.margin_right
+        if self.background_color is not None:
+            properties["backgroundColor"] = self.background_color
+        if self.border_radius is not None:
+            properties["borderRadius"] = self.border_radius
+        if self.shadow_opacity is not None:
+            properties["shadowOpacity"] = self.shadow_opacity
+        if self.shadow_radius is not None:
+            properties["shadowRadius"] = self.shadow_radius
+        if self.shadow_offset_x is not None:
+            properties["shadowOffsetX"] = self.shadow_offset_x
+        if self.shadow_offset_y is not None:
+            properties["shadowOffsetY"] = self.shadow_offset_y
 
         return {
             "type": "container",
