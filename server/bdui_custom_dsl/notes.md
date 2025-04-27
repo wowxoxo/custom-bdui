@@ -39,3 +39,17 @@ curl -X POST http://127.0.0.1:8000/bdui-dsl/fsm/next -H "Content-Type: applicati
 ```
 Should return screen_id: "services"
 
+
+### Debug service one
+```
+curl -X POST http://127.0.0.1:8000/bdui-dsl/fsm/current -H "Content-Type: application/json" -d '{"user_id": "test_user", "flow": "service-one"}'
+```
+Returns screen_id: "service-one.get".
+
+
+```
+curl -X POST http://127.0.0.1:8000/bdui-dsl/fsm/next -H "Content-Type: application/json" -d '{"user_id": "test_user", "flow": "service-one", "event": "continue"}'
+```
+Returns screen_id: "service-one.service-center-visit".
+
+

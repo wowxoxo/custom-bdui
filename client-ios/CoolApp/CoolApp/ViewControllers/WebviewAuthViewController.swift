@@ -63,13 +63,13 @@ class WebviewAuthViewController: UIViewController, WKNavigationDelegate {
                 if let data = data, let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                    let screen = json["screen"] as? [String: Any], let screenId = screen["id"] as? String {
                     print("Next screen: \(screenId)")
-                    if screenId == "services" {
+                    if screenId == "registration.services" {
                         let vc = ServicesViewController()
                         self.navigationController?.pushViewController(vc, animated: true)
-                    } else if screenId == "not_enough_rights" {
+                    } else if screenId == "registration.not_enough_rights" {
                         let vc = NotEnoughRightsViewController()
                         self.navigationController?.pushViewController(vc, animated: true)
-                    } else if screenId == "need_register" {
+                    } else if screenId == "registration.need_register" {
                         self.navigationController?.popViewController(animated: true)
                     }
                 } else {

@@ -20,7 +20,7 @@ class NeedRegisterViewController: UIViewController {
                             if let response = response,
                                let screenDict = response["screen"] as? [String: Any],
                                let screenId = screenDict["id"] as? String,
-                               screenId == "auth" {
+                               screenId == "registration.auth" {
                                 DispatchQueue.main.async {
                                     self.performSegue(withIdentifier: "toWebviewAuth", sender: nil)
                                 }

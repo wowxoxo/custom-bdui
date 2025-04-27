@@ -46,3 +46,38 @@ class RegistrationFSM:
 
     def to_dict(self) -> Dict:
         return {"user_id": self.user_id, "flow": self.flow, "state": self.state}
+
+class ServiceOneFSM:
+    def __init__(self, user_id: str):
+        self.user_id = user_id
+        self.flow = "service-one"
+        self.machine = Machine(
+            model=self,
+            states=["get", "service-center-visit", "points-list", "point-details"],
+            initial="get",
+            transitions=[
+                {"trigger": "continue", "source": "get", "dest": "service-center-visit"},
+                {"trigger": "select-address", "source": "service-center-visit", "dest": "points-list"},
+                {"trigger": "select-point", "source": "points-list", "dest": "point-details"},
+                {"trigger": "back", "source": "service-center-visit", "dest": "get"},
+                {"trigger": "back", "source": "points-list", "dest": "service-center-visit"},
+                {"trigger": "back", "source": "point-details", "dest": "points-list"},
+                {"trigger": "back", "source": "get", "dest": "exit"},  # Return to services
+            ],
+        )
+
+    def get_state(self) -> str:
+        return self.state
+
+    def trigger_event(self, event: str) -> bool:
+        try:
+            logger.info(f"Triggering {event} from {self.state} for user {self.user_id}")
+            self.trigger(event)
+            logger.info(f"Transitioned to {self.state}")
+            return True
+        except Exception as e:
+            logger.error(f"FSM error: {e}")
+            return False
+
+    def to_dict(self) -> Dict:
+        return {"user_id": self.user_id, "flow": self.flow, "state": self.state}
