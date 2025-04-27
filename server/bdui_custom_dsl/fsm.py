@@ -62,7 +62,7 @@ class ServiceOneFSM:
                 {"trigger": "back", "source": "service-center-visit", "dest": "get"},
                 {"trigger": "back", "source": "points-list", "dest": "service-center-visit"},
                 {"trigger": "back", "source": "point-details", "dest": "points-list"},
-                {"trigger": "back", "source": "get", "dest": "exit"},  # Return to services
+                {"trigger": "back", "source": "get", "dest": "exit"},
             ],
         )
 

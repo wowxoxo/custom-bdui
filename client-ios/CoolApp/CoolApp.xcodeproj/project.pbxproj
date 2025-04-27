@@ -14,6 +14,8 @@
 		75A65B842DB6C8D000FA2597 /* BDUIRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A65B832DB6C8C600FA2597 /* BDUIRenderer.swift */; };
 		75A65B862DBD186600FA2597 /* ExtendedUIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A65B852DBD185700FA2597 /* ExtendedUIViewController.swift */; };
 		75A65B882DBE6FA200FA2597 /* ServiceOneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A65B872DBE6FA200FA2597 /* ServiceOneViewController.swift */; };
+		75A65B8A2DBEA51900FA2597 /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A65B892DBEA50E00FA2597 /* EventDispatcher.swift */; };
+		75A65B8C2DBEB2CD00FA2597 /* ServicesWebviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A65B8B2DBEB2CD00FA2597 /* ServicesWebviewViewController.swift */; };
 		840490352C198F72009DD628 /* CustomBDUIPointDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840490342C198F72009DD628 /* CustomBDUIPointDetailViewController.swift */; };
 		843E51502C19B52300D2478C /* CustomBDUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843E514F2C19B52300D2478C /* CustomBDUI.swift */; };
 		843E51522C19B56500D2478C /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843E51512C19B56500D2478C /* JSONParser.swift */; };
@@ -48,6 +50,8 @@
 		75A65B832DB6C8C600FA2597 /* BDUIRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BDUIRenderer.swift; sourceTree = "<group>"; };
 		75A65B852DBD185700FA2597 /* ExtendedUIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedUIViewController.swift; sourceTree = "<group>"; };
 		75A65B872DBE6FA200FA2597 /* ServiceOneViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceOneViewController.swift; sourceTree = "<group>"; };
+		75A65B892DBEA50E00FA2597 /* EventDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDispatcher.swift; sourceTree = "<group>"; };
+		75A65B8B2DBEB2CD00FA2597 /* ServicesWebviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServicesWebviewViewController.swift; sourceTree = "<group>"; };
 		840490342C198F72009DD628 /* CustomBDUIPointDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBDUIPointDetailViewController.swift; sourceTree = "<group>"; };
 		843E514F2C19B52300D2478C /* CustomBDUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBDUI.swift; sourceTree = "<group>"; };
 		843E51512C19B56500D2478C /* JSONParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
@@ -119,6 +123,7 @@
 		84C26B352C1631AE0091140F /* CoolApp */ = {
 			isa = PBXGroup;
 			children = (
+				75A65B892DBEA50E00FA2597 /* EventDispatcher.swift */,
 				75A65B852DBD185700FA2597 /* ExtendedUIViewController.swift */,
 				75A65B832DB6C8C600FA2597 /* BDUIRenderer.swift */,
 				843E515A2C1A005200D2478C /* Nodes */,
@@ -160,6 +165,7 @@
 				75A65B7B2DB4E32E00FA2597 /* ServicesViewController.swift */,
 				75A65B7D2DB4E3FA00FA2597 /* NotEnoughRightsViewController.swift */,
 				75A65B872DBE6FA200FA2597 /* ServiceOneViewController.swift */,
+				75A65B8B2DBEB2CD00FA2597 /* ServicesWebviewViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -248,6 +254,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				75A65B842DB6C8D000FA2597 /* BDUIRenderer.swift in Sources */,
+				75A65B8A2DBEA51900FA2597 /* EventDispatcher.swift in Sources */,
 				75A65B772DAC375900FA2597 /* WebviewAuthViewController.swift in Sources */,
 				843E515E2C1A01E200D2478C /* TextNode.swift in Sources */,
 				843E51622C1A023300D2478C /* UIColorExtension.swift in Sources */,
@@ -272,6 +279,7 @@
 				843E51692C1A159700D2478C /* TestJSONParser.swift in Sources */,
 				75A65B7C2DB4E32E00FA2597 /* ServicesViewController.swift in Sources */,
 				75A65B7E2DB4E3FA00FA2597 /* NotEnoughRightsViewController.swift in Sources */,
+				75A65B8C2DBEB2CD00FA2597 /* ServicesWebviewViewController.swift in Sources */,
 				843E51572C19BDD000D2478C /* ServerDrivenView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

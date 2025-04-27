@@ -8,7 +8,10 @@ class WebviewAuthViewController: UIViewController, WKNavigationDelegate {
         super.viewDidLoad()
         title = "Авторизация"
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-            title: "Back", style: .plain, target: self, action: #selector(backTapped)
+            image: UIImage(systemName: "chevron.left"),
+            style: .plain,
+            target: self,
+            action: #selector(backTapped)
         )
 
         let config = WKWebViewConfiguration()
@@ -31,6 +34,15 @@ class WebviewAuthViewController: UIViewController, WKNavigationDelegate {
 
         if let url = URL(string: "https://wowxoxo.github.io/coolapp-auth-form") {
             webView.load(URLRequest(url: url))
+        } else {
+            showError(
+                in: view,
+                error: nil,
+                urlString: "https://wowxoxo.github.io/coolapp-auth-form",
+                method: "N/A",
+                requestData: nil,
+                retryHandler: { [weak self] in self?.navigationController?.popViewController(animated: true) }
+            )
         }
     }
 
@@ -51,32 +63,32 @@ class WebviewAuthViewController: UIViewController, WKNavigationDelegate {
     }
 
     private func sendEventToBackend(event: String) {
-        guard let url = URL(string: "http://127.0.0.1:8000/bdui-dsl/fsm/next") else { return }
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        let body: [String: Any] = ["user_id": "test_user", "event": event]
-        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
-
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            DispatchQueue.main.async {
-                if let data = data, let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                   let screen = json["screen"] as? [String: Any], let screenId = screen["id"] as? String {
-                    print("Next screen: \(screenId)")
-                    if screenId == "registration.services" {
-                        let vc = ServicesViewController()
-                        self.navigationController?.pushViewController(vc, animated: true)
-                    } else if screenId == "registration.not_enough_rights" {
-                        let vc = NotEnoughRightsViewController()
-                        self.navigationController?.pushViewController(vc, animated: true)
-                    } else if screenId == "registration.need_register" {
-                        self.navigationController?.popViewController(animated: true)
-                    }
-                } else {
-                    print("Error: \(error?.localizedDescription ?? "No data")")
+        EventDispatcher.sendEvent(
+            flow: "registration",
+            event: event,
+            viewController: self,
+            onSuccess: { [weak self] json in
+                guard let self = self, let json = json, let screen = json["screen"] as? [String: Any], let screenId = screen["id"] as? String else { return }
+                if screenId == "registration.services" {
+                    let vc = ServicesViewController()
+                    self.navigationController?.pushViewController(vc, animated: true)
+                } else if screenId == "registration.not_enough_rights" {
+                    let vc = NotEnoughRightsViewController()
+                    self.navigationController?.pushViewController(vc, animated: true)
+                } else if screenId == "registration.need_register" {
                     self.navigationController?.popViewController(animated: true)
                 }
+            },
+            onError: { [weak self] error in
+                self?.showError(
+                    in: self?.view ?? UIView(),
+                    error: error,
+                    urlString: "http://127.0.0.1:8000/bdui-dsl/fsm/next",
+                    method: "POST",
+                    requestData: nil,
+                    retryHandler: { [weak self] in self?.navigationController?.popViewController(animated: true) }
+                )
             }
-        }.resume()
+        )
     }
 }

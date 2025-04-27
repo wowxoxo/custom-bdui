@@ -4,7 +4,11 @@ extension UIViewController {
     private static let spinnerTag = 999
 
     func showLoading(in containerView: UIView) {
+        // Clear existing content
+//        containerView.subviews.forEach { $0.removeFromSuperview() }
+
         let loadingContainer = UIView()
+        loadingContainer.backgroundColor = .white
         loadingContainer.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(loadingContainer)
 
@@ -28,11 +32,13 @@ extension UIViewController {
         spinner.startAnimating()
 
         NSLayoutConstraint.activate([
-            loadingContainer.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            loadingContainer.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+            loadingContainer.topAnchor.constraint(equalTo: containerView.topAnchor),
+            loadingContainer.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            loadingContainer.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            loadingContainer.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
 
-            imageView.topAnchor.constraint(equalTo: loadingContainer.topAnchor),
             imageView.centerXAnchor.constraint(equalTo: loadingContainer.centerXAnchor),
+            imageView.centerYAnchor.constraint(equalTo: loadingContainer.centerYAnchor, constant: -50),
             imageView.widthAnchor.constraint(equalToConstant: 150),
             imageView.heightAnchor.constraint(equalToConstant: 150),
 
@@ -42,7 +48,7 @@ extension UIViewController {
 
             spinner.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
             spinner.centerXAnchor.constraint(equalTo: loadingContainer.centerXAnchor),
-            spinner.bottomAnchor.constraint(equalTo: loadingContainer.bottomAnchor)
+            spinner.bottomAnchor.constraint(lessThanOrEqualTo: loadingContainer.bottomAnchor)
         ])
     }
 

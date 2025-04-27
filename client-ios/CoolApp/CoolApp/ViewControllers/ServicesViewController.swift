@@ -14,97 +14,49 @@ class ServicesViewController: UIViewController {
     }
 
     private func fetchCurrentState() {
-        guard let url = URL(string: "http://127.0.0.1:8000/bdui-dsl/fsm/current") else {
-            print("Invalid URL")
+        EventDispatcher.fetchCurrentState(
+            flow: "registration",
+            viewController: self,
+            onSuccess: { [weak self] json in
+                guard let self = self, let json = json, let screen = json["screen"] as? [String: Any] else { return }
+                self.renderer.render(json: screen, into: self.view, eventHandler: self.handleEvent)
+            },
+            onError: { [weak self] error in
+                guard let self = self else { return }
+                self.showError(
+                    in: self.view,
+                    error: error,
+                    urlString: "http://127.0.0.1:8000/bdui-dsl/fsm/current",
+                    method: "POST",
+                    requestData: nil,
+                    retryHandler: { [weak self] in self?.fetchCurrentState() }
+                )
+            }
+        )
+    }
+
+    private func handleEvent(action: String, value: String?) {
+        if action == "request", let event = value {
+            if event == "select_service1" {
+                let vc = ServiceOneViewController()
+                navigationController?.pushViewController(vc, animated: true)
+            } else if event == "select_service2" {
+                print("Service 2 selected")
+            }
+        } else if action == "webview", let uri = value, let url = URL(string: uri) {
+            let vc = ServicesWebviewViewController()
+            vc.initialURL = url
+            navigationController?.pushViewController(vc, animated: true)
+        } else {
+            print("Invalid webview action or missing URI")
             showError(
                 in: view,
                 error: nil,
-                urlString: "http://127.0.0.1:8000/bdui-dsl/fsm/current",
-                method: "POST",
+                urlString: "N/A",
+                method: "N/A",
                 requestData: nil,
                 retryHandler: { [weak self] in self?.fetchCurrentState() }
             )
-            return
-        }
-
-        showLoading(in: view)
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        let body: [String: Any] = ["user_id": "test_user", "flow": "registration"]
-        let requestData = try? JSONSerialization.data(withJSONObject: body)
-        request.httpBody = requestData
-
-        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
-            DispatchQueue.main.async {
-                guard let self = self else { return }
-                self.hideLoading(in: self.view)
-
-                if let error = error {
-                    self.showError(
-                        in: self.view,
-                        error: error,
-                        urlString: url.absoluteString,
-                        method: "POST",
-                        requestData: requestData,
-                        retryHandler: { [weak self] in self?.fetchCurrentState() }
-                    )
-                    return
-                }
-
-                guard let data = data else {
-                    self.showError(
-                        in: self.view,
-                        error: nil,
-                        urlString: url.absoluteString,
-                        method: "POST",
-                        requestData: requestData,
-                        retryHandler: { [weak self] in self?.fetchCurrentState() }
-                    )
-                    return
-                }
-
-                do {
-                    if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                       let screen = json["screen"] as? [String: Any] {
-                        self.renderer.render(json: screen, into: self.view, eventHandler: self.handleEvent)
-                    } else {
-                        self.showError(
-                            in: self.view,
-                            error: nil,
-                            urlString: url.absoluteString,
-                            method: "POST",
-                            requestData: requestData,
-                            retryHandler: { [weak self] in self?.fetchCurrentState() }
-                        )
-                    }
-                } catch {
-                    self.showError(
-                        in: self.view,
-                        error: error,
-                        urlString: url.absoluteString,
-                        method: "POST",
-                        requestData: requestData,
-                        retryHandler: { [weak self] in self?.fetchCurrentState() }
-                    )
-                }
-            }
-        }.resume()
-    }
-
-    private func handleEvent(action: String, event: String?) {
-        guard let event = event else {
-            print("No event provided")
-            return
-        }
-
-        if event == "select_service1" {
-            let vc = ServiceOneViewController()
-            navigationController?.pushViewController(vc, animated: true)
-        } else if event == "select_service2" {
-            print("Service 2 selected") // Later: ServiceTwoViewController
         }
     }
 }
