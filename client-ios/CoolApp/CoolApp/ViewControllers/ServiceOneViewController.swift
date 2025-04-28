@@ -1,106 +1,73 @@
 import UIKit
+import MapKit
 
 class ServiceOneViewController: UIViewController {
     private var renderer: BDUIRenderer!
+    private var isRequestInProgress = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Услуга №1"
         view.backgroundColor = .white
 
-        // Override back button
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-            title: "Назад", style: .plain, target: self, action: #selector(backTapped)
+            image: UIImage(systemName: "chevron.left"),
+            style: .plain,
+            target: self,
+            action: #selector(backTapped)
         )
 
         renderer = BDUIRenderer()
         fetchCurrentState()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchCurrentState()
+    }
+
     @objc func backTapped() {
+        if isRequestInProgress {
+            return
+        }
         sendToBackend(event: "back")
     }
 
     private func fetchCurrentState() {
-        guard let url = URL(string: "http://127.0.0.1:8000/bdui-dsl/fsm/current") else {
-            print("Invalid URL")
-            showError(
-                in: view,
-                error: nil,
-                urlString: "http://127.0.0.1:8000/bdui-dsl/fsm/current",
-                method: "POST",
-                requestData: nil,
-                retryHandler: { [weak self] in self?.fetchCurrentState() }
-            )
-            return
-        }
+        isRequestInProgress = true
+        navigationItem.leftBarButtonItem?.isEnabled = false
 
-        showLoading(in: view)
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        let body: [String: Any] = ["user_id": "test_user", "flow": "service-one"]
-        let requestData = try? JSONSerialization.data(withJSONObject: body)
-        request.httpBody = requestData
-
-        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
-            DispatchQueue.main.async {
+        EventDispatcher.fetchCurrentState(
+            flow: "service-one",
+            viewController: self,
+            onSuccess: { [weak self] json in
+                guard let self = self, let json = json, let screen = json["screen"] as? [String: Any], let screenId = screen["id"] as? String else { return }
+                self.isRequestInProgress = false
+                self.navigationItem.leftBarButtonItem?.isEnabled = true
+                
+                print("screenId", screenId)
+                if screenId == "service-one.exit" {
+                    // Navigate back to ServicesViewController if service-one already in exit status
+                    self.navigationController?.popViewController(animated: true)
+                } else {
+                    self.clearView()
+                    self.renderer.render(json: screen, into: self.view, eventHandler: self.handleEvent)
+                }
+            },
+            onError: { [weak self] error in
                 guard let self = self else { return }
-                self.hideLoading(in: self.view)
-
-                if let error = error {
-                    self.showError(
-                        in: self.view,
-                        error: error,
-                        urlString: url.absoluteString,
-                        method: "POST",
-                        requestData: requestData,
-                        retryHandler: { [weak self] in self?.fetchCurrentState() }
-                    )
-                    return
-                }
-
-                guard let data = data else {
-                    self.showError(
-                        in: self.view,
-                        error: nil,
-                        urlString: url.absoluteString,
-                        method: "POST",
-                        requestData: requestData,
-                        retryHandler: { [weak self] in self?.fetchCurrentState() }
-                    )
-                    return
-                }
-
-                do {
-                    if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                       let screen = json["screen"] as? [String: Any] {
-                        self.clearView()
-                        self.renderer.render(json: screen, into: self.view, eventHandler: self.handleEvent)
-                    } else {
-                        self.showError(
-                            in: self.view,
-                            error: nil,
-                            urlString: url.absoluteString,
-                            method: "POST",
-                            requestData: requestData,
-                            retryHandler: { [weak self] in self?.fetchCurrentState() }
-                        )
-                    }
-                } catch {
-                    self.showError(
-                        in: self.view,
-                        error: error,
-                        urlString: url.absoluteString,
-                        method: "POST",
-                        requestData: requestData,
-                        retryHandler: { [weak self] in self?.fetchCurrentState() }
-                    )
-                }
+                self.isRequestInProgress = false
+                self.navigationItem.leftBarButtonItem?.isEnabled = true
+                self.showError(
+                    in: self.view,
+                    error: error,
+                    urlString: "http://127.0.0.1:8000/bdui-dsl/fsm/current",
+                    method: "POST",
+                    requestData: nil,
+                    retryHandler: { [weak self] in self?.fetchCurrentState() }
+                )
             }
-        }.resume()
+        )
     }
 
     private func clearView() {
@@ -113,94 +80,56 @@ class ServiceOneViewController: UIViewController {
             return
         }
 
-        sendToBackend(event: event)
+        if event == "continue-route" {
+            let coordinate = CLLocationCoordinate2D(latitude: 55.7558, longitude: 37.6173)
+            let placemark = MKPlacemark(coordinate: coordinate)
+            let mapItem = MKMapItem(placemark: placemark)
+            mapItem.name = "Service Center"
+            mapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving])
+        } else {
+            sendToBackend(event: event)
+        }
     }
 
     private func sendToBackend(event: String) {
-        guard let url = URL(string: "http://127.0.0.1:8000/bdui-dsl/fsm/next") else {
-            print("Invalid URL")
-            showError(
-                in: view,
-                error: nil,
-                urlString: "http://127.0.0.1:8000/bdui-dsl/fsm/next",
-                method: "POST",
-                requestData: nil,
-                retryHandler: { [weak self] in self?.sendToBackend(event: event) }
-            )
-            return
-        }
+        isRequestInProgress = true
+        navigationItem.leftBarButtonItem?.isEnabled = false
 
-        showLoading(in: view)
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        let body: [String: Any] = ["user_id": "test_user", "flow": "service-one", "event": event]
-        let requestData = try? JSONSerialization.data(withJSONObject: body)
-        request.httpBody = requestData
-
-        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
-            DispatchQueue.main.async {
+        EventDispatcher.sendEvent(
+            flow: "service-one",
+            event: event,
+            viewController: self,
+            onSuccess: { [weak self] json in
+                guard let self = self, let json = json, let screen = json["screen"] as? [String: Any], let screenId = screen["id"] as? String else {
+                    self?.isRequestInProgress = false
+                    self?.navigationItem.leftBarButtonItem?.isEnabled = true
+                    return
+                }
+                self.isRequestInProgress = false
+                self.navigationItem.leftBarButtonItem?.isEnabled = true
+                
+                print("screenId", screenId)
+                if screenId == "service-one.exit" {
+                    // Navigate back to ServicesViewController
+                    self.navigationController?.popViewController(animated: true)
+                } else {
+                    self.clearView()
+                    self.renderer.render(json: screen, into: self.view, eventHandler: self.handleEvent)
+                }
+            },
+            onError: { [weak self] error in
                 guard let self = self else { return }
-                self.hideLoading(in: self.view)
-
-                if let error = error {
-                    self.showError(
-                        in: self.view,
-                        error: error,
-                        urlString: url.absoluteString,
-                        method: "POST",
-                        requestData: requestData,
-                        retryHandler: { [weak self] in self?.sendToBackend(event: event) }
-                    )
-                    return
-                }
-
-                guard let data = data else {
-                    self.showError(
-                        in: self.view,
-                        error: nil,
-                        urlString: url.absoluteString,
-                        method: "POST",
-                        requestData: requestData,
-                        retryHandler: { [weak self] in self?.sendToBackend(event: event) }
-                    )
-                    return
-                }
-
-                do {
-                    if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                       let screen = json["screen"] as? [String: Any],
-                       let screenId = screen["id"] as? String {
-                        if screenId == "services" {
-                            // Exit to ServicesViewController
-                            self.navigationController?.popViewController(animated: true)
-                        } else {
-                            self.clearView()
-                            self.renderer.render(json: screen, into: self.view, eventHandler: self.handleEvent)
-                        }
-                    } else {
-                        self.showError(
-                            in: self.view,
-                            error: nil,
-                            urlString: url.absoluteString,
-                            method: "POST",
-                            requestData: requestData,
-                            retryHandler: { [weak self] in self?.sendToBackend(event: event) }
-                        )
-                    }
-                } catch {
-                    self.showError(
-                        in: self.view,
-                        error: error,
-                        urlString: url.absoluteString,
-                        method: "POST",
-                        requestData: requestData,
-                        retryHandler: { [weak self] in self?.sendToBackend(event: event) }
-                    )
-                }
+                self.isRequestInProgress = false
+                self.navigationItem.leftBarButtonItem?.isEnabled = true
+                self.showError(
+                    in: self.view,
+                    error: error,
+                    urlString: "http://127.0.0.1:8000/bdui-dsl/fsm/next",
+                    method: "POST",
+                    requestData: nil,
+                    retryHandler: { [weak self] in self?.sendToBackend(event: event) }
+                )
             }
-        }.resume()
+        )
     }
 }

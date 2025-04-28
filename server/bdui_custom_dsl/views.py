@@ -6,6 +6,7 @@ from .components import Container, Text, Button, Image
 from .fsm_manager import fsm_manager
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 import time
+from .config import WEBVIEW_URLS
 
 data_path = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -65,6 +66,11 @@ def build_screen(flow: str, state: str) -> Screen:
 				)
 				)
 			)
+			main_container.add_child(
+                Container(orientation="vertical", padding_top=10).add_child(
+                    Button(text="Выбрать услугу", action="webview", uri=WEBVIEW_URLS["services"])
+                )
+            )
 
 		elif state == "services0":
 			main_container.add_child(Text("Доступные услуги", font_size=22, bold=True, alignment="center"))

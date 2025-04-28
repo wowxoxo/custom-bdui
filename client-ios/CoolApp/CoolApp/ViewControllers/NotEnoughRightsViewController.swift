@@ -77,7 +77,7 @@ class NotEnoughRightsViewController: UIViewController {
 
             if action == "request", let event = event {
                 self.sendEventToBackend(event: event) { screenId in
-                    if screenId == "auth" {
+                    if screenId == "registration.auth" {
                         DispatchQueue.main.async {
                             let vc = WebviewAuthViewController()
                             self.navigationController?.pushViewController(vc, animated: true)

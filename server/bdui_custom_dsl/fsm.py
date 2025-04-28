@@ -53,7 +53,7 @@ class ServiceOneFSM:
         self.flow = "service-one"
         self.machine = Machine(
             model=self,
-            states=["get", "service-center-visit", "points-list", "point-details"],
+            states=["get", "service-center-visit", "points-list", "point-details", "exit"],
             initial="get",
             transitions=[
                 {"trigger": "continue", "source": "get", "dest": "service-center-visit"},
