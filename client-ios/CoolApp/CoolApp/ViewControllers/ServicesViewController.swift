@@ -41,7 +41,8 @@ class ServicesViewController: UIViewController {
                 let vc = ServiceOneViewController()
                 navigationController?.pushViewController(vc, animated: true)
             } else if event == "select_service2" {
-                print("Service 2 selected")
+                let vc = ServiceTwoViewController()
+                navigationController?.pushViewController(vc, animated: true)
             }
         } else if action == "webview", let uri = value, let url = URL(string: uri) {
             let vc = ServicesWebviewViewController()

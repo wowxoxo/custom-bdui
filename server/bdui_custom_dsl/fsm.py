@@ -81,3 +81,67 @@ class ServiceOneFSM:
 
     def to_dict(self) -> Dict:
         return {"user_id": self.user_id, "flow": self.flow, "state": self.state}
+    
+class ServiceTwoFSM:
+    def __init__(self, user_id: str):
+        self.user_id = user_id
+        self.flow = "service-two"
+        self.machine = Machine(
+            model=self,
+            states=["get", "details", "exit"],
+            initial="get",
+            transitions=[
+                {"trigger": "continue", "source": "get", "dest": "details"},
+                {"trigger": "complete", "source": "details", "dest": "exit"},
+                {"trigger": "back", "source": "details", "dest": "get"},
+                {"trigger": "back", "source": "get", "dest": "exit"},
+            ],
+        )
+
+    def get_state(self) -> str:
+        return self.state
+    
+    def trigger_event(self, event: str) -> bool:
+        try:
+            logger.info(f"Triggering {event} from {self.state} for user {self.user_id}")
+            self.trigger(event)
+            logger.info(f"Transitioned to {self.state}")
+            return True
+        except Exception as e:
+            logger.error(f"FSM error: {e}")
+            return False
+
+    def to_dict(self) -> Dict:
+        return {"user_id": self.user_id, "flow": self.flow, "state": self.state}
+
+class ServiceThreeFSM:
+    def __init__(self, user_id: str):
+        self.user_id = user_id
+        self.flow = "service-three"
+        self.machine = Machine(
+            model=self,
+            states=["docs-accept", "details", "exit"],
+            initial="docs-accept",
+            transitions=[
+                {"trigger": "accept-docs", "source": "docs-accept", "dest": "details"},
+                {"trigger": "continue", "source": "details", "dest": "exit"},
+                {"trigger": "back", "source": "details", "dest": "docs-accept"},
+                {"trigger": "back", "source": "docs-accept", "dest": "exit"},
+            ],
+        )
+
+    def get_state(self) -> str:
+        return self.state
+
+    def trigger_event(self, event: str) -> bool:
+        try:
+            logger.info(f"Triggering {event} from {self.state} for user {self.user_id}")
+            self.trigger(event)
+            logger.info(f"Transitioned to {self.state}")
+            return True
+        except Exception as e:
+            logger.error(f"FSM error: {e}")
+            return False
+
+    def to_dict(self) -> Dict:
+        return {"user_id": self.user_id, "flow": self.flow, "state": self.state}

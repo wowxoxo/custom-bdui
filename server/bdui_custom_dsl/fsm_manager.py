@@ -1,4 +1,4 @@
-from .fsm import RegistrationFSM, ServiceOneFSM
+from .fsm import RegistrationFSM, ServiceOneFSM, ServiceTwoFSM, ServiceThreeFSM
 from typing import Dict
 
 # For now, use an in-memory dict (later, swap for Django session or DB)
@@ -15,6 +15,10 @@ class FSMManager:
                 self.fsms[user_id][flow] = RegistrationFSM(user_id)
             elif flow == "service-one":
                 self.fsms[user_id][flow] = ServiceOneFSM(user_id)
+            elif flow == "service-two":
+                self.fsms[user_id][flow] = ServiceTwoFSM(user_id)
+            elif flow == "service-three":
+                self.fsms[user_id][flow] = ServiceThreeFSM(user_id)
         return self.fsms[user_id][flow]
 
 fsm_manager = FSMManager()

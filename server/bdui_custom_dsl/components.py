@@ -225,3 +225,18 @@ class Image(Component):
         if self.margin_right is not None:
             properties["marginRight"] = self.margin_right
         return {"type": "image", "properties": properties}
+    
+class Checkbox(Component):
+    def __init__(self, label: str, checked: bool = False, event: str = ""):
+        # super().__init__(component_type="checkbox")
+        self.properties = {
+            "label": label,
+            "checked": checked,
+            "event": event
+        }
+
+    def to_dict(self) -> dict:
+        return {
+            "type": "checkbox",
+            "properties": self.properties
+        }

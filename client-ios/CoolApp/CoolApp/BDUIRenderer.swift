@@ -3,9 +3,10 @@ import UIKit
 class BDUIRenderer {
     private var viewMap: [String: UIView] = [:] // Track views by target
     weak var view: UIView? // Track the root view for safe area handling
+    private var eventHandler: ((String, String?) -> Void)?
 
     func render(json: [String: Any], into container: UIView, eventHandler: @escaping (String, String?) -> Void) {
-        // Store the root container
+        self.eventHandler = eventHandler
         self.view = container
         
         // Clear existing subviews
@@ -163,13 +164,13 @@ class BDUIRenderer {
                 let action = properties["action"] as? String
                 let event = properties["event"] as? String
                 let target = properties["target"] as? String
-                button.addAction(UIAction { _ in
-                    if action == "toggle", let target = target, let targetView = self.viewMap[target] as? UIButton {
+                button.addAction(UIAction { [weak self] _ in
+                    if action == "toggle", let target = target, let targetView = self?.viewMap[target] as? UIButton {
                         targetView.isEnabled.toggle()
                     } else if action == "request", let event = event {
-                        eventHandler(action!, event)
+                        self?.eventHandler?(action!, event)
                     } else if action == "webview" {
-                        eventHandler(action!, properties["uri"] as? String)
+                        self?.eventHandler?(action!, properties["uri"] as? String)
                     }
                 }, for: .touchUpInside)
                 button.translatesAutoresizingMaskIntoConstraints = false
@@ -187,7 +188,6 @@ class BDUIRenderer {
 
                 if bottomAligned && container === self.view {
                     bottomAlignedButton = button
-                    // Store properties for the bottom-aligned button
                     bottomAlignedButtonProperties = (fullWidth: fullWidth, marginLeft: marginLeft, marginRight: marginRight, width: width)
                 } else {
                     if paddingTop > 0 {
@@ -291,6 +291,79 @@ class BDUIRenderer {
                     spacer.heightAnchor.constraint(equalToConstant: marginBottom).isActive = true
                 }
 
+            case "checkbox":
+                // Create a container for the checkbox and label
+                let checkboxContainer = UIView()
+                checkboxContainer.translatesAutoresizingMaskIntoConstraints = false
+
+                // Create the checkbox (using a UIButton for simplicity)
+                let checkbox = UIButton(type: .custom)
+                let checked = properties["checked"] as? Bool ?? false
+                checkbox.setImage(UIImage(systemName: checked ? "checkmark.square" : "square"), for: .normal)
+                checkbox.tintColor = .systemBlue
+                checkbox.translatesAutoresizingMaskIntoConstraints = false
+                checkbox.addAction(UIAction { [weak self] _ in
+                    // Toggle checkbox appearance
+                    let isChecked = checkbox.image(for: .normal) == UIImage(systemName: "checkmark.square")
+                    checkbox.setImage(UIImage(systemName: isChecked ? "square" : "checkmark.square"), for: .normal)
+
+                    // Trigger event only if checked
+                    if !isChecked, let event = properties["event"] as? String {
+                        self?.eventHandler?("request", event)
+                    }
+                }, for: .touchUpInside)
+
+                // Create the label
+                let label = UILabel()
+                label.text = properties["label"] as? String
+                label.font = .systemFont(ofSize: CGFloat(properties["font_size"] as? Int ?? 16))
+                label.textColor = UIColor(hex: properties["color"] as? String ?? "#000000")
+                label.numberOfLines = 0
+                label.translatesAutoresizingMaskIntoConstraints = false
+
+                checkboxContainer.addSubview(checkbox)
+                checkboxContainer.addSubview(label)
+
+                // Handle margins
+                let marginTop = CGFloat(properties["marginTop"] as? Int ?? 0)
+                let marginBottom = CGFloat(properties["marginBottom"] as? Int ?? 0)
+                let marginLeft = CGFloat(properties["marginLeft"] as? Int ?? 0)
+                let marginRight = CGFloat(properties["marginRight"] as? Int ?? 0)
+
+                let paddingTop = CGFloat(properties["paddingTop"] as? Int ?? 0)
+
+                // Add top margin/padding
+                if marginTop > 0 || paddingTop > 0 {
+                    let spacer = UIView()
+                    stackView.addArrangedSubview(spacer)
+                    spacer.heightAnchor.constraint(equalToConstant: marginTop + paddingTop).isActive = true
+                }
+
+                stackView.addArrangedSubview(checkboxContainer)
+
+                // Layout the checkbox and label
+                NSLayoutConstraint.activate([
+                    checkbox.leadingAnchor.constraint(equalTo: checkboxContainer.leadingAnchor),
+                    checkbox.centerYAnchor.constraint(equalTo: checkboxContainer.centerYAnchor),
+                    checkbox.widthAnchor.constraint(equalToConstant: 24),
+                    checkbox.heightAnchor.constraint(equalToConstant: 24),
+
+                    label.leadingAnchor.constraint(equalTo: checkbox.trailingAnchor, constant: 8),
+                    label.trailingAnchor.constraint(equalTo: checkboxContainer.trailingAnchor),
+                    label.topAnchor.constraint(equalTo: checkboxContainer.topAnchor),
+                    label.bottomAnchor.constraint(equalTo: checkboxContainer.bottomAnchor),
+
+                    checkboxContainer.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: marginLeft),
+                    checkboxContainer.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -marginRight)
+                ])
+
+                // Add bottom margin
+                if marginBottom > 0 {
+                    let spacer = UIView()
+                    stackView.addArrangedSubview(spacer)
+                    spacer.heightAnchor.constraint(equalToConstant: marginBottom).isActive = true
+                }
+
             default:
                 break
             }
@@ -299,7 +372,7 @@ class BDUIRenderer {
         // Handle bottom-aligned button
         if let button = bottomAlignedButton, let props = bottomAlignedButtonProperties {
             // Remove the button from the stack view if it was added
-            stackView.arrangedSubviews.first(where: { $0 === button })?.removeFromSuperview()
+//            stackView.arrangedSubviews.first(where: { $0 === licenciabutton })?.removeFromSuperview()
             
             // Add the button directly to the container and pin to the bottom
             container.addSubview(button)

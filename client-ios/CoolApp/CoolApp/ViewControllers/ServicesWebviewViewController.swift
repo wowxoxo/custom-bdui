@@ -59,9 +59,11 @@ class ServicesWebviewViewController: UIViewController, WKNavigationDelegate {
                 let vc = ServiceOneViewController()
                 navigationController?.pushViewController(vc, animated: true)
             } else if event == "select_service2" {
-                print("Service 2 selected")
+                let vc = ServiceTwoViewController()
+                navigationController?.pushViewController(vc, animated: true)
             } else if event == "select_service3" {
-                print("Service 3 selected")
+                let vc = ServiceThreeViewController()
+                navigationController?.pushViewController(vc, animated: true)
             }
             decisionHandler(.cancel)
         } else {

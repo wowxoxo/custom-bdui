@@ -2,7 +2,7 @@ from django.http import JsonResponse, HttpResponse
 import json
 import os
 from .dsl_builder import Screen
-from .components import Container, Text, Button, Image
+from .components import Container, Text, Button, Image, Checkbox
 from .fsm_manager import fsm_manager
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 import time
@@ -67,10 +67,10 @@ def build_screen(flow: str, state: str) -> Screen:
 				)
 			)
 			main_container.add_child(
-                Container(orientation="vertical", padding_top=10).add_child(
-                    Button(text="Выбрать услугу", action="webview", uri=WEBVIEW_URLS["services"])
-                )
-            )
+				Container(orientation="vertical", padding_top=10).add_child(
+					Button(text="Выбрать услугу", action="webview", uri=WEBVIEW_URLS["services"])
+				)
+			)
 
 		elif state == "services0":
 			main_container.add_child(Text("Доступные услуги", font_size=22, bold=True, alignment="center"))
@@ -260,6 +260,42 @@ def build_screen(flow: str, state: str) -> Screen:
 			main_container.add_child(
 				Container(orientation="vertical", padding_top=20).add_child(
 					Button(text="Продолжить маршрут", action="request", event="continue-route")
+				)
+			)
+
+	elif flow == "service-two":
+		if state == "get":
+			main_container.add_child(Text("Получить услугу №2", font_size=22, bold=True))
+			main_container.add_child(Text("Услуга №2: Начало", font_size=16))
+			main_container.add_child(
+				Container(orientation="vertical", padding_top=20).add_child(
+					Button(text="Продолжить", action="request", event="continue")
+				)
+			)
+		elif state == "details":
+			main_container.add_child(Text("Детали услуги №2", font_size=22, bold=True))
+			main_container.add_child(Text("Информация об услуге №2", font_size=16))
+			main_container.add_child(
+				Container(orientation="vertical", padding_top=20).add_child(
+					Button(text="Завершить", action="request", event="complete")
+				)
+			)
+
+	elif flow == "service-three":
+		if state == "docs-accept":
+			main_container.add_child(Text("Принятие условий", font_size=22, bold=True))
+			main_container.add_child(Text("Пожалуйста, примите условия для продолжения", font_size=16))
+			main_container.add_child(
+				Container(orientation="vertical", padding_top=20).add_child(
+					Checkbox(label="Я принимаю условия", event="accept-docs")
+				)
+			)
+		elif state == "details":
+			main_container.add_child(Text("Услуга №3", font_size=22, bold=True))
+			main_container.add_child(Text("Детали услуги №3", font_size=16))
+			main_container.add_child(
+				Container(orientation="vertical", padding_top=20).add_child(
+					Button(text="Продолжить", action="request", event="continue")
 				)
 			)
 

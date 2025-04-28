@@ -16,6 +16,8 @@
 		75A65B882DBE6FA200FA2597 /* ServiceOneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A65B872DBE6FA200FA2597 /* ServiceOneViewController.swift */; };
 		75A65B8A2DBEA51900FA2597 /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A65B892DBEA50E00FA2597 /* EventDispatcher.swift */; };
 		75A65B8C2DBEB2CD00FA2597 /* ServicesWebviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A65B8B2DBEB2CD00FA2597 /* ServicesWebviewViewController.swift */; };
+		75A65B8E2DC014E700FA2597 /* ServiceTwoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A65B8D2DC014E700FA2597 /* ServiceTwoViewController.swift */; };
+		75A65B902DC015D700FA2597 /* ServiceThreeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A65B8F2DC015D700FA2597 /* ServiceThreeViewController.swift */; };
 		840490352C198F72009DD628 /* CustomBDUIPointDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840490342C198F72009DD628 /* CustomBDUIPointDetailViewController.swift */; };
 		843E51502C19B52300D2478C /* CustomBDUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843E514F2C19B52300D2478C /* CustomBDUI.swift */; };
 		843E51522C19B56500D2478C /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843E51512C19B56500D2478C /* JSONParser.swift */; };
@@ -52,6 +54,8 @@
 		75A65B872DBE6FA200FA2597 /* ServiceOneViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceOneViewController.swift; sourceTree = "<group>"; };
 		75A65B892DBEA50E00FA2597 /* EventDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDispatcher.swift; sourceTree = "<group>"; };
 		75A65B8B2DBEB2CD00FA2597 /* ServicesWebviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServicesWebviewViewController.swift; sourceTree = "<group>"; };
+		75A65B8D2DC014E700FA2597 /* ServiceTwoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceTwoViewController.swift; sourceTree = "<group>"; };
+		75A65B8F2DC015D700FA2597 /* ServiceThreeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceThreeViewController.swift; sourceTree = "<group>"; };
 		840490342C198F72009DD628 /* CustomBDUIPointDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBDUIPointDetailViewController.swift; sourceTree = "<group>"; };
 		843E514F2C19B52300D2478C /* CustomBDUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBDUI.swift; sourceTree = "<group>"; };
 		843E51512C19B56500D2478C /* JSONParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
@@ -166,6 +170,8 @@
 				75A65B7D2DB4E3FA00FA2597 /* NotEnoughRightsViewController.swift */,
 				75A65B872DBE6FA200FA2597 /* ServiceOneViewController.swift */,
 				75A65B8B2DBEB2CD00FA2597 /* ServicesWebviewViewController.swift */,
+				75A65B8D2DC014E700FA2597 /* ServiceTwoViewController.swift */,
+				75A65B8F2DC015D700FA2597 /* ServiceThreeViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -267,7 +273,9 @@
 				84C26B3B2C1631AE0091140F /* AvailableServicesViewController.swift in Sources */,
 				843E51522C19B56500D2478C /* JSONParser.swift in Sources */,
 				84C26B372C1631AE0091140F /* AppDelegate.swift in Sources */,
+				75A65B8E2DC014E700FA2597 /* ServiceTwoViewController.swift in Sources */,
 				843E51592C19C23500D2478C /* NodeRenderer.swift in Sources */,
+				75A65B902DC015D700FA2597 /* ServiceThreeViewController.swift in Sources */,
 				843E51672C1A14B300D2478C /* AnyDecodable.swift in Sources */,
 				84C26B392C1631AE0091140F /* SceneDelegate.swift in Sources */,
 				843E515C2C1A007400D2478C /* ContainerNode.swift in Sources */,
