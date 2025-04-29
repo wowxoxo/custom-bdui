@@ -264,7 +264,18 @@ def build_screen(flow: str, state: str) -> Screen:
 			)
 
 	elif flow == "service-two":
-		if state == "get":
+		if state == "temporarily-unavailable":
+			main_container.add_child(Text("Услуга временно недоступна", font_size=22, bold=True))
+			main_container.add_child(Text("Попробуйте снова позже", font_size=16))
+			main_container.add_child(
+				Container(orientation="vertical", padding_top=20).add_child(
+					Button(text="Попробовать снова", action="request", event="retry")
+				)
+			)
+		elif state == "unavailable":
+			main_container.add_child(Text("Услуга недоступна", font_size=22, bold=True))
+			main_container.add_child(Text("Данная услуга недоступна в вашем регионе", font_size=16))
+		elif state == "get":
 			main_container.add_child(Text("Получить услугу №2", font_size=22, bold=True))
 			main_container.add_child(Text("Услуга №2: Начало", font_size=16))
 			main_container.add_child(
@@ -287,7 +298,20 @@ def build_screen(flow: str, state: str) -> Screen:
 			main_container.add_child(Text("Пожалуйста, примите условия для продолжения", font_size=16))
 			main_container.add_child(
 				Container(orientation="vertical", padding_top=20).add_child(
-					Checkbox(label="Я принимаю условия", event="accept-docs")
+					Checkbox(label="Я принимаю условия", action="toggle", target="continue-button")
+				)
+			)
+			main_container.add_child(
+				Container(orientation="vertical", padding_top=20).add_child(
+					Button(
+						text="Продолжить",
+						action="request",
+						event="accept-docs",
+						target="continue-button",
+						background_color="#1E90FF",
+						color="#ffffff",
+						disabled=True
+					)
 				)
 			)
 		elif state == "details":

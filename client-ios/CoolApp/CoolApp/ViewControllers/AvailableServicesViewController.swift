@@ -14,10 +14,10 @@ class AvailableServicesViewController: UIViewController, UITableViewDataSource, 
 
         override func viewDidLoad() {
             super.viewDidLoad()
-            self.title = "Доступные услуги"
-            tableView.dataSource = self
-            tableView.delegate = self
-            tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ServiceCell")
+            self.title = "Демо"
+//            tableView.dataSource = self
+//            tableView.delegate = self
+//            tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ServiceCell")
         }
 
         func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

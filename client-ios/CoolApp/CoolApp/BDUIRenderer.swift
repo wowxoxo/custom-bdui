@@ -116,6 +116,8 @@ class BDUIRenderer {
 
                 // Create the button
                 let button = UIButton(configuration: buttonConfig)
+                button.isEnabled = !(properties["disabled"] as? Bool ?? false)
+                button.alpha = button.isEnabled ? 1.0 : 0.5
 
                 // Load image if imageUri is provided
                 if let imageUri = properties["imageUri"] as? String, let url = URL(string: imageUri) {
@@ -303,13 +305,13 @@ class BDUIRenderer {
                 checkbox.tintColor = .systemBlue
                 checkbox.translatesAutoresizingMaskIntoConstraints = false
                 checkbox.addAction(UIAction { [weak self] _ in
-                    // Toggle checkbox appearance
                     let isChecked = checkbox.image(for: .normal) == UIImage(systemName: "checkmark.square")
                     checkbox.setImage(UIImage(systemName: isChecked ? "square" : "checkmark.square"), for: .normal)
 
-                    // Trigger event only if checked
-                    if !isChecked, let event = properties["event"] as? String {
-                        self?.eventHandler?("request", event)
+                    if let action = properties["action"] as? String, action == "toggle",
+                       let target = properties["target"] as? String,
+                       let targetView = self?.viewMap[target] as? UIButton {
+                        targetView.isEnabled = !isChecked
                     }
                 }, for: .touchUpInside)
 
@@ -372,7 +374,7 @@ class BDUIRenderer {
         // Handle bottom-aligned button
         if let button = bottomAlignedButton, let props = bottomAlignedButtonProperties {
             // Remove the button from the stack view if it was added
-//            stackView.arrangedSubviews.first(where: { $0 === licenciabutton })?.removeFromSuperview()
+            stackView.arrangedSubviews.first(where: { $0 === button })?.removeFromSuperview()
             
             // Add the button directly to the container and pin to the bottom
             container.addSubview(button)

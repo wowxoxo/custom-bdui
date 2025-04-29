@@ -137,6 +137,7 @@ class Button(Component):
     full_width: bool = False
     margin_left: Optional[int] = None
     margin_right: Optional[int] = None
+    disabled: bool = False
 
     def to_dict(self) -> dict:
         properties = {
@@ -178,17 +179,29 @@ class Button(Component):
             properties["marginLeft"] = self.margin_left
         if self.margin_right is not None:
             properties["marginRight"] = self.margin_right
+        if self.disabled:
+            properties["disabled"] = True
         return {"type": "button", "properties": properties}
     
 @dataclass
-class Checkbox(Component):
+class Checkbox0(Component):
     text: str
     target: str  # Button to enable
     checked: bool = False
     font_size: int = 16
     color: str = "#000000"
+    action: Optional[str] = None
 
     def to_dict(self) -> dict:
+        properties = {
+            "text": self.text,
+            "target": self.target,
+            "checked": self.checked,
+            "font_size": self.font_size,
+            "color": self.color
+        }
+        if self.action:
+            properties["action"] = self.action
         return {
             "type": "checkbox",
             "properties": {
@@ -227,12 +240,14 @@ class Image(Component):
         return {"type": "image", "properties": properties}
     
 class Checkbox(Component):
-    def __init__(self, label: str, checked: bool = False, event: str = ""):
+    def __init__(self, label: str, checked: bool = False, event: str = "", action: str = "", target: str = ""):
         # super().__init__(component_type="checkbox")
         self.properties = {
             "label": label,
             "checked": checked,
-            "event": event
+            "event": event,
+            "action": action,
+            "target": target,
         }
 
     def to_dict(self) -> dict:

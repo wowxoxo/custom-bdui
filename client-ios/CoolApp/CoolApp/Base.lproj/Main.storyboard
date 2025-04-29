@@ -24,7 +24,7 @@
                                     <rect key="frame" x="0.0" y="121.66666793823242" width="393" height="44"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <state key="normal" title="Button"/>
-                                    <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" title="Start"/>
                                     <connections>
                                         <segue destination="kyk-0j-vc0" kind="show" identifier="toNeedRegister" id="DY1-V4-oXp"/>
                                     </connections>

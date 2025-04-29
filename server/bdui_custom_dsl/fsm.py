@@ -88,9 +88,15 @@ class ServiceTwoFSM:
         self.flow = "service-two"
         self.machine = Machine(
             model=self,
-            states=["get", "details", "exit"],
-            initial="get",
+            states=["temporarily-unavailable", "unavailable", "get", "details", "exit"],
+            initial="temporarily-unavailable",  # Start in temporarily-unavailable for demo
             transitions=[
+                # From temporarily-unavailable, user can retry to proceed
+                {"trigger": "retry", "source": "temporarily-unavailable", "dest": "unavailable"},
+                {"trigger": "back", "source": "temporarily-unavailable", "dest": "exit"},
+                # From unavailable, user can only go back
+                {"trigger": "back", "source": "unavailable", "dest": "exit"},
+                # Main flow transitions
                 {"trigger": "continue", "source": "get", "dest": "details"},
                 {"trigger": "complete", "source": "details", "dest": "exit"},
                 {"trigger": "back", "source": "details", "dest": "get"},
