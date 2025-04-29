@@ -234,7 +234,14 @@ def build_screen(flow: str, state: str) -> Screen:
 			)
 			main_container.add_child(
 				Container(orientation="vertical", padding_top=5).add_child(
-					Text("7 863 438-28-00", font_size=14)
+					# Text("7 863 438-28-00", font_size=14)
+					Text(
+						text="7 863 438-28-00",
+						font_size=14,
+						color="#007AFF",
+						action="tel",
+						tel="78634382800"
+					)
 				)
 			)
 			main_container.add_child(
@@ -292,8 +299,12 @@ def build_screen(flow: str, state: str) -> Screen:
 				)
 			)
 
-	elif flow == "service-three":
+	# FIXME: remove, leave for now for reference
+	elif flow == "service-three0":
 		if state == "docs-accept":
+			main_container.add_child(
+				Image(uri="https://wowxoxo.github.io/coolapp-auth-form/doc-with-glasses.png", width=295, height=184, margin_bottom=15)
+			)
 			main_container.add_child(Text("Принятие условий", font_size=22, bold=True))
 			main_container.add_child(Text("Пожалуйста, примите условия для продолжения", font_size=16))
 			main_container.add_child(
@@ -320,6 +331,97 @@ def build_screen(flow: str, state: str) -> Screen:
 			main_container.add_child(
 				Container(orientation="vertical", padding_top=20).add_child(
 					Button(text="Продолжить", action="request", event="continue")
+				)
+			)
+
+	elif flow == "service-three":
+		if state == "intro":
+			main_container.add_child(
+				Image(uri="https://via.placeholder.com/80x80.png?text=Doc", width=80, height=80, margin_bottom=20)
+			)
+			main_container.add_child(
+				Text("Получить услугу №3", font_size=24, bold=True, color="#000000", alignment="center")
+			)
+			main_container.add_child(
+				Text(
+					"Услуга получена без потребности посещения. Для получения услуги подтвердите условия.",
+					font_size=16,
+					color="#666666",
+					alignment="center",
+					padding_top=10
+				)
+			)
+			main_container.add_child(
+				Container(orientation="vertical", padding_top=30).add_child(
+					Button(
+						text="Продолжить",
+						action="request",
+						event="continue",
+						background_color="#007AFF",
+						color="#FFFFFF",
+						border_radius=8,
+						padding=12,
+						full_width=True
+					)
+				)
+			)
+		elif state == "docs-accept":
+			main_container.add_child(
+				Image(uri="https://via.placeholder.com/80x80.png?text=Docs", width=80, height=80, margin_bottom=20)
+			)
+			main_container.add_child(
+				Text("Ознакомьтесь с условиями", font_size=24, bold=True, color="#000000", alignment="center")
+			)
+			main_container.add_child(
+				Text(
+					"Для получения услуги подтвердите условия и примите пользовательское соглашение.",
+					font_size=16,
+					color="#666666",
+					alignment="center",
+					padding_top=10
+				)
+			)
+			main_container.add_child(
+				Container(orientation="vertical", padding_top=30).add_child(
+					# Checkbox(label="Подтверждаю ознакомление с условиями и принимаю пользовательское соглашение", event="accept-docs", color="#007AFF")
+					Checkbox(label="Я принимаю условия", action="toggle", target="continue-button")
+				)
+			)
+			main_container.add_child(
+				Container(orientation="vertical", padding_top=20).add_child(
+					Button(
+						text="Продолжить",
+						action="request",
+						event="accept-docs",
+						target="continue-button",
+						background_color="#1E90FF",
+						color="#ffffff",
+						disabled=True
+					)
+				)
+			)
+		elif state == "final":
+			main_container.add_child(
+				Image(uri="https://via.placeholder.com/80x80.png?text=Check", width=80, height=80, margin_bottom=20)
+			)
+			main_container.add_child(
+				Text("Услуга получена", font_size=24, bold=True, color="#000000", alignment="center")
+			)
+			main_container.add_child(
+				Text("Теперь услуга работает для вас", font_size=16, color="#666666", alignment="center", padding_top=10)
+			)
+			main_container.add_child(
+				Container(orientation="vertical", padding_top=30).add_child(
+					Button(
+						text="На начало",
+						action="request",
+						event="finish",
+						background_color="#007AFF",
+						color="#FFFFFF",
+						border_radius=8,
+						padding=12,
+						full_width=True
+					)
 				)
 			)
 

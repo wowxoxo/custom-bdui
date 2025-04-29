@@ -4,6 +4,36 @@ class BDUIRenderer {
     private var viewMap: [String: UIView] = [:] // Track views by target
     weak var view: UIView? // Track the root view for safe area handling
     private var eventHandler: ((String, String?) -> Void)?
+    
+    private struct AssociatedKeys {
+        static var telNumber = "telNumber"
+    }
+
+    @objc private func handleTelTap(_ gesture: UITapGestureRecognizer) {
+        guard let label = gesture.view as? UILabel,
+              let tel = objc_getAssociatedObject(label, &AssociatedKeys.telNumber) as? String,
+              let url = URL(string: "tel://\(tel)") else { return }
+
+        let alert = UIAlertController(
+            title: "Позвонить",
+            message: label.text,
+            preferredStyle: .actionSheet
+        )
+        alert.addAction(UIAlertAction(title: "Позвонить", style: .default) { _ in
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        })
+        alert.addAction(UIAlertAction(title: "Отмена", style: .cancel, handler: nil))
+
+        // Present the alert (need access to the view controller)
+        if let viewController = UIApplication.shared.windows.first?.rootViewController {
+            // Traverse the view controller hierarchy to find the topmost presented controller
+            var topController = viewController
+            while let presented = topController.presentedViewController {
+                topController = presented
+            }
+            topController.present(alert, animated: true, completion: nil)
+        }
+    }
 
     func render(json: [String: Any], into container: UIView, eventHandler: @escaping (String, String?) -> Void) {
         self.eventHandler = eventHandler
@@ -81,6 +111,16 @@ class BDUIRenderer {
                 label.textAlignment = NSTextAlignment(from: properties["alignment"] as? String ?? "left")
                 label.numberOfLines = 0
                 label.translatesAutoresizingMaskIntoConstraints = false
+                
+                if let action = properties["action"] as? String, action == "tel" {
+                    label.isUserInteractionEnabled = true
+                    let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTelTap(_:)))
+                    label.addGestureRecognizer(tapGesture)
+                    // Store the phone number in the label's tag or associated object (using a dictionary for simplicity)
+                    if let tel = properties["tel"] as? String {
+                        objc_setAssociatedObject(label, &AssociatedKeys.telNumber, tel, .OBJC_ASSOCIATION_RETAIN)
+                    }
+                }
 
                 let paddingTop = CGFloat(properties["paddingTop"] as? Int ?? 0)
                 if paddingTop > 0 {
@@ -117,7 +157,7 @@ class BDUIRenderer {
                 // Create the button
                 let button = UIButton(configuration: buttonConfig)
                 button.isEnabled = !(properties["disabled"] as? Bool ?? false)
-                button.alpha = button.isEnabled ? 1.0 : 0.5
+//                button.alpha = button.isEnabled ? 1.0 : 0.5
 
                 // Load image if imageUri is provided
                 if let imageUri = properties["imageUri"] as? String, let url = URL(string: imageUri) {

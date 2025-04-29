@@ -21,6 +21,7 @@ class Text(Component):
 	action: Optional[str] = None
 	uri: Optional[str] = None
 	event: Optional[str] = None
+	tel: Optional[str] = None
 
 	def to_dict(self) -> dict:
 		properties = {
@@ -46,6 +47,8 @@ class Text(Component):
 			properties["uri"] = self.uri
 		if self.event is not None:
 			properties["event"] = self.event
+		if self.tel is not None:
+			properties["tel"] = self.tel
 
 		return {
 			"type": "text",
@@ -240,7 +243,7 @@ class Image(Component):
         return {"type": "image", "properties": properties}
     
 class Checkbox(Component):
-    def __init__(self, label: str, checked: bool = False, event: str = "", action: str = "", target: str = ""):
+    def __init__(self, label: str, checked: bool = False, event: str = "", action: str = "", target: str = "", color: str = ""):
         # super().__init__(component_type="checkbox")
         self.properties = {
             "label": label,
@@ -248,6 +251,7 @@ class Checkbox(Component):
             "event": event,
             "action": action,
             "target": target,
+            "color": color,
         }
 
     def to_dict(self) -> dict:

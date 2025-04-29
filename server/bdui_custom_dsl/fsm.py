@@ -126,13 +126,15 @@ class ServiceThreeFSM:
         self.flow = "service-three"
         self.machine = Machine(
             model=self,
-            states=["docs-accept", "details", "exit"],
-            initial="docs-accept",
+            states=["intro", "docs-accept", "final", "exit"],
+            initial="intro",
             transitions=[
-                {"trigger": "accept-docs", "source": "docs-accept", "dest": "details"},
-                {"trigger": "continue", "source": "details", "dest": "exit"},
-                {"trigger": "back", "source": "details", "dest": "docs-accept"},
-                {"trigger": "back", "source": "docs-accept", "dest": "exit"},
+                {"trigger": "continue", "source": "intro", "dest": "docs-accept"},
+                {"trigger": "accept-docs", "source": "docs-accept", "dest": "final"},
+                {"trigger": "finish", "source": "final", "dest": "exit"},
+                {"trigger": "back", "source": "intro", "dest": "exit"},
+                {"trigger": "back", "source": "docs-accept", "dest": "intro"},
+                {"trigger": "back", "source": "final", "dest": "exit"}
             ],
         )
 
