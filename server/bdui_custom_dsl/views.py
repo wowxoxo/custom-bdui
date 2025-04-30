@@ -29,7 +29,7 @@ def build_screen(flow: str, state: str) -> Screen:
 			# )
 			main_container.add_child(
 				Container(orientation="vertical", padding_top=20).add_child(
-					Button(text="Зарегистрироваться", action="request", event="tap_register", bottomAligned=True, background_color="#1E90FF", border_radius=10, full_width=True, margin_right=10, padding=10, color='#ffffff')
+					Button(text="Зарегистрироваться", action="request", event="tap_register", bottomAligned=True, background_color="#1E90FF", border_radius=10, full_width=True, margin_right=10, padding=15, color='#ffffff')
 				)
 			)
 		elif state == "auth":
@@ -68,7 +68,8 @@ def build_screen(flow: str, state: str) -> Screen:
 			)
 			main_container.add_child(
 				Container(orientation="vertical", padding_top=10).add_child(
-					Button(text="Выбрать услугу", action="webview", uri=WEBVIEW_URLS["services"])
+					Button(text="Все услуги (+скрытые)", color="ffffff",
+					 action="webview", uri=WEBVIEW_URLS["services"])
 				)
 			)
 
@@ -163,60 +164,63 @@ def build_screen(flow: str, state: str) -> Screen:
 			main_container.add_child(Text("Невозможно продолжить работу", font_size=16))
 			main_container.add_child(
 				Container(orientation="vertical", padding_top=20).add_child(
-					Button(text="Попробовать снова", action="request", event="tap_register")
+					Button(text="Попробовать снова", color="#ffffff", action="request", event="tap_register", bottomAligned=True)
 				)
 			)
 	elif flow == "service-one":
 		if state == "get":
-			main_container.add_child(Text("Получить услугу №1", font_size=22, bold=True))
-			main_container.add_child(Text("Услуга получена без потребности посещения, либо устройство обслуживания", font_size=16))
+			main_container.add_child(
+				Image(uri="https://wowxoxo.github.io/coolapp-auth-form/get-doc.png", width=295, height=184, margin_top=20, margin_bottom=20)
+			)
+			main_container.add_child(Text("Получить услугу №1", font_size=22, bold=True, alignment="center"))
+			main_container.add_child(Text("Услуга доступна без дополнительных условий. Для получения услуги потребуется посетить один из центров обслуживания", font_size=16, alignment="center", padding_top=10))
 			main_container.add_child(
 				Container(orientation="vertical", padding_top=20).add_child(
-					Button(text="Продолжить", action="request", event="continue")
+					Button(text="Получить", action="request", event="continue",
+					bottomAligned=True, background_color="#1E90FF", border_radius=10, full_width=True, margin_right=10, padding=15, color='#ffffff'
+					)
 				)
 			)
 		elif state == "service-center-visit":
-			main_container.add_child(Text("Посетить центр обслуживания", font_size=22, bold=True))
-			main_container.add_child(Text("Часы работы: будни, постоянное РКЦ. Банк. С собой взять паспорт РФ", font_size=16))
+			main_container.add_child(
+				Image(uri="https://wowxoxo.github.io/coolapp-auth-form/walking.png", width=295, height=184, margin_top=20, margin_bottom=20)
+			)
+			main_container.add_child(Text("Посетить центр обслуживания", font_size=22, bold=True, alignment="center"))
+			main_container.add_child(Text("Чтобы получить услугу, посетите МФЦ или банк. С собой возьмите паспорт РФ", font_size=16, alignment="center"))
 			main_container.add_child(
 				Container(orientation="vertical", padding_top=20).add_child(
-					Button(text="Выбрать адрес", action="request", event="select-address")
+					Button(text="Выбрать адрес", action="request", event="select-address",
+					bottomAligned=True, background_color="#1E90FF", border_radius=10, full_width=True, margin_right=10, padding=15, color='#ffffff'
+					)
 				)
 			)
 		elif state == "points-list":
-			main_container.add_child(Text("Листв обслуживания", font_size=22, bold=True))
-			main_container.add_child(Text("ООО «Центр-Инвест»", font_size=16))
-			main_container.add_child(Text("19071, Москва перчул, Москва, ул. Дм, 12 км", font_size=14))
+			main_container.add_child(Text("Центры обслуживания", font_size=22, bold=True))
+			main_container.add_child(Text("Инвестиционный Банк «ВЕСТА» (ООО)", font_size=16, padding_top=10))
+			main_container.add_child(Text("119071, Москва регион, Москва город, Ленинский проспект улица, 15а дом, д. 15а", font_size=18))
 			main_container.add_child(Text("15а", font_size=14))
 			main_container.add_child(
 				Container(orientation="vertical", padding_top=10).add_child(
-					Button(text="АО «Райффайзенбанк»", action="request", event="select-point", target="point1")
+					Button(text="Выбрать", action="request", event="select-point", target="point1", color="#ffffff")
 				)
 			)
 			main_container.add_child(
 				Container(orientation="vertical", padding_top=10).add_child(
-					Text("«Отражение» Чадоночка", font_size=16)
+					Text("АО Райффайзенбанк, дополнительный офис", font_size=18)
 				)
 			)
 			main_container.add_child(
 				Container(orientation="vertical", padding_top=10).add_child(
-					Text("19071, Москва перчул, Москва, ул. Дм, 15а", font_size=14)
+					Text("119071, Москва регион, Москва город, Ленинский проспект улица, 15а дом, д. 15а", font_size=16)
 				)
 			)
 			main_container.add_child(
 				Container(orientation="vertical", padding_top=10).add_child(
-					Button(text="ООО «Заря-Западный»", action="request", event="select-point", target="point2")
-				)
-			)
-			main_container.add_child(
-				Container(orientation="vertical", padding_top=10).add_child(
-					Text("19071, Москва перчул, Москва, ул. Дм, 15а", font_size=14)
+					Button(text="Выбрать", action="request", event="select-point", target="point2", color="#ffffff")
 				)
 			)
 		elif state == "point-details":
-			main_container.add_child(Text("Доступные услуги", font_size=22, bold=True))
-			main_container.add_child(Text("Международные обои", font_size=16))
-			main_container.add_child(Text("«Искры» ФОРА-БАНК", font_size=14))
+			main_container.add_child(Text("Дополнительный международный офис «Прайм» АКБ «ФОРА-БАНК»", font_size=22, bold=True))
 			main_container.add_child(
 				Container(orientation="vertical", padding_top=10).add_child(
 					Text("Адрес", font_size=16, bold=True)
@@ -224,7 +228,7 @@ def build_screen(flow: str, state: str) -> Screen:
 			)
 			main_container.add_child(
 				Container(orientation="vertical", padding_top=5).add_child(
-					Text("19071, Москва перчул, Москва, ул. Дм, 15а", font_size=14)
+					Text("119071, Москва регион, Москва город, Ленинский проспект улица, 15а дом, д. 15а", font_size=14)
 				)
 			)
 			main_container.add_child(
@@ -261,12 +265,12 @@ def build_screen(flow: str, state: str) -> Screen:
 			)
 			main_container.add_child(
 				Container(orientation="vertical", padding_top=5).add_child(
-					Text("• Переносный билетный банкет\n• Переносный буфетный банкет\n• Платежи удаленной линии", font_size=14)
+					Text("• Обслуживание физических лиц\n• Регистрация учётной записи\n• Регистрация биометрии", font_size=14)
 				)
 			)
 			main_container.add_child(
 				Container(orientation="vertical", padding_top=20).add_child(
-					Button(text="Продолжить маршрут", action="request", event="continue-route")
+					Button(text="Проложить маршрут", color="#ffffff", action="request", event="continue-route")
 				)
 			)
 
@@ -276,7 +280,7 @@ def build_screen(flow: str, state: str) -> Screen:
 			main_container.add_child(Text("Попробуйте снова позже", font_size=16))
 			main_container.add_child(
 				Container(orientation="vertical", padding_top=20).add_child(
-					Button(text="Попробовать снова", action="request", event="retry")
+					Button(text="Попробовать снова", color="#ffffff", action="request", event="retry", bottomAligned=True)
 				)
 			)
 		elif state == "unavailable":
@@ -287,7 +291,7 @@ def build_screen(flow: str, state: str) -> Screen:
 			main_container.add_child(Text("Услуга №2: Начало", font_size=16))
 			main_container.add_child(
 				Container(orientation="vertical", padding_top=20).add_child(
-					Button(text="Продолжить", action="request", event="continue")
+					Button(text="Продолжить", action="request", event="continue", color="#ffffff")
 				)
 			)
 		elif state == "details":
@@ -344,7 +348,7 @@ def build_screen(flow: str, state: str) -> Screen:
 			)
 			main_container.add_child(
 				Text(
-					"Услуга получена без потребности посещения. Для получения услуги подтвердите условия.",
+					"Услуга доступна без дополнительных условий",
 					font_size=16,
 					color="#666666",
 					alignment="center",
@@ -413,7 +417,7 @@ def build_screen(flow: str, state: str) -> Screen:
 			main_container.add_child(
 				Container(orientation="vertical", padding_top=30).add_child(
 					Button(
-						text="На начало",
+						text="К услугам",
 						action="request",
 						event="finish",
 						background_color="#007AFF",

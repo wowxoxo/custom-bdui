@@ -2,8 +2,9 @@ import UIKit
 
 class BDUIRenderer {
     private var viewMap: [String: UIView] = [:] // Track views by target
-    weak var view: UIView? // Track the root view for safe area handling
     private var eventHandler: ((String, String?) -> Void)?
+    private var view: UIView?
+    private var rootContainer: UIView? // Add this to track the root container
     
     private struct AssociatedKeys {
         static var telNumber = "telNumber"
@@ -38,35 +39,18 @@ class BDUIRenderer {
     func render(json: [String: Any], into container: UIView, eventHandler: @escaping (String, String?) -> Void) {
         self.eventHandler = eventHandler
         self.view = container
+        self.viewMap.removeAll()
         
+        if self.rootContainer == nil {
+            self.rootContainer = container
+        }
+
         // Clear existing subviews
         container.subviews.forEach { $0.removeFromSuperview() }
-        viewMap.removeAll()
-        
+
         guard let components = json["components"] as? [[String: Any]] else { return }
 
-        // Create a stack view for the root container
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.alignment = .fill
-        stackView.distribution = .fill
-        stackView.spacing = 0
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        container.addSubview(stackView)
-
-        // Pin the stack view to the safe area
-        let topAnchor = container === self.view ? container.safeAreaLayoutGuide.topAnchor : container.topAnchor
-        let bottomAnchor = container === self.view ? container.safeAreaLayoutGuide.bottomAnchor : container.bottomAnchor
-        NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-            stackView.topAnchor.constraint(equalTo: topAnchor),
-            stackView.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ])
-
-        // Track the button that needs to be bottom-aligned, along with its properties
-        var bottomAlignedButton: UIButton?
-        var bottomAlignedButtonProperties: (fullWidth: Bool, marginLeft: CGFloat, marginRight: CGFloat, width: CGFloat)?
+        var lastView: UIView?
 
         for component in components {
             guard let type = component["type"] as? String,
@@ -74,32 +58,29 @@ class BDUIRenderer {
 
             switch type {
             case "container":
+                let padding = CGFloat(properties["padding"] as? Int ?? 0)
                 let paddingTop = CGFloat(properties["paddingTop"] as? Int ?? 0)
-                let paddingHorizontal = CGFloat(properties["padding"] as? Int ?? 0)
                 let subContainer = UIView()
-                
                 if let hex = properties["backgroundColor"] as? String {
                     subContainer.backgroundColor = UIColor(hex: hex)
                 }
                 subContainer.translatesAutoresizingMaskIntoConstraints = false
-                
-                if paddingTop > 0 {
-                    let spacer = UIView()
-                    stackView.addArrangedSubview(spacer)
-                    spacer.heightAnchor.constraint(equalToConstant: paddingTop).isActive = true
-                }
+                container.addSubview(subContainer)
 
-                stackView.addArrangedSubview(subContainer)
-
-                // Apply horizontal padding
-                NSLayoutConstraint.activate([
-                    subContainer.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: paddingHorizontal),
-                    subContainer.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -paddingHorizontal)
-                ])
-
+                // Render children into the subContainer
                 if let children = component["children"] as? [[String: Any]] {
                     render(json: ["components": children], into: subContainer, eventHandler: eventHandler)
                 }
+
+                // Anchor the subContainer to the previous view (or container top) and apply padding
+                let topAnchor = lastView?.bottomAnchor ?? (container === self.view ? container.safeAreaLayoutGuide.topAnchor : container.topAnchor)
+                NSLayoutConstraint.activate([
+                    subContainer.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: padding),
+                    subContainer.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -padding),
+                    subContainer.topAnchor.constraint(equalTo: topAnchor, constant: paddingTop)
+                ])
+
+                lastView = subContainer
 
             case "text":
                 let label = UILabel()
@@ -111,98 +92,43 @@ class BDUIRenderer {
                 label.textAlignment = NSTextAlignment(from: properties["alignment"] as? String ?? "left")
                 label.numberOfLines = 0
                 label.translatesAutoresizingMaskIntoConstraints = false
-                
+                container.addSubview(label)
+
+                // Make the label tappable if it has a "tel" action
                 if let action = properties["action"] as? String, action == "tel" {
                     label.isUserInteractionEnabled = true
                     let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTelTap(_:)))
                     label.addGestureRecognizer(tapGesture)
-                    // Store the phone number in the label's tag or associated object (using a dictionary for simplicity)
                     if let tel = properties["tel"] as? String {
                         objc_setAssociatedObject(label, &AssociatedKeys.telNumber, tel, .OBJC_ASSOCIATION_RETAIN)
                     }
                 }
 
                 let paddingTop = CGFloat(properties["paddingTop"] as? Int ?? 0)
-                if paddingTop > 0 {
-                    let spacer = UIView()
-                    stackView.addArrangedSubview(spacer)
-                    spacer.heightAnchor.constraint(equalToConstant: paddingTop).isActive = true
-                }
-
-                stackView.addArrangedSubview(label)
-
-                // Apply leading/trailing constraints directly to the label
+                let topAnchor = lastView?.bottomAnchor ?? (container === self.view ? container.safeAreaLayoutGuide.topAnchor : container.topAnchor)
                 NSLayoutConstraint.activate([
-                    label.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: 20),
-                    label.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -20)
+                    label.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 20),
+                    label.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -20),
+                    label.topAnchor.constraint(equalTo: topAnchor, constant: paddingTop)
                 ])
 
+                lastView = label
+
             case "button":
-                // Declare padding variables first
-                let buttonPadding = CGFloat(properties["padding"] as? Int ?? 0)
-                let buttonPaddingTop = CGFloat(properties["paddingTop"] as? Int ?? (properties["padding"] as? Int ?? 0))
-                let buttonPaddingBottom = CGFloat(properties["paddingBottom"] as? Int ?? (properties["padding"] as? Int ?? 0))
-                let buttonPaddingLeft = CGFloat(properties["paddingLeft"] as? Int ?? (properties["padding"] as? Int ?? 0))
-                let buttonPaddingRight = CGFloat(properties["paddingRight"] as? Int ?? (properties["padding"] as? Int ?? 0))
+                var buttonConfig = UIButton.Configuration.filled()
+                buttonConfig.title = properties["text"] as? String
+                buttonConfig.baseForegroundColor = UIColor(hex: properties["color"] as? String ?? "#1E90FF")
+                buttonConfig.baseBackgroundColor = UIColor(hex: properties["backgroundColor"] as? String ?? "#1E90FF")
+                buttonConfig.cornerStyle = .medium
+                buttonConfig.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
+                    var outgoing = incoming
+                    outgoing.font = .systemFont(ofSize: CGFloat(properties["font_size"] as? Int ?? 18))
+                    return outgoing
+                }
 
-                // Create the button configuration
-                var buttonConfig = UIButton.Configuration.plain()
-                buttonConfig.contentInsets = NSDirectionalEdgeInsets(
-                    top: buttonPaddingTop,
-                    leading: buttonPaddingLeft,
-                    bottom: buttonPaddingBottom,
-                    trailing: buttonPaddingRight
-                )
-
-                // Create the button
                 let button = UIButton(configuration: buttonConfig)
                 button.isEnabled = !(properties["disabled"] as? Bool ?? false)
 //                button.alpha = button.isEnabled ? 1.0 : 0.5
-
-                // Load image if imageUri is provided
-                if let imageUri = properties["imageUri"] as? String, let url = URL(string: imageUri) {
-                    URLSession.shared.dataTask(with: url) { data, response, error in
-                        if let error = error {
-                            print("Error loading button image: \(error.localizedDescription)")
-                            return
-                        }
-                        if let data = data, let image = UIImage(data: data) {
-                            DispatchQueue.main.async {
-                                var updatedConfig = button.configuration ?? UIButton.Configuration.plain()
-                                updatedConfig.image = image
-                                updatedConfig.imagePlacement = .all
-                                updatedConfig.contentInsets = NSDirectionalEdgeInsets(
-                                    top: buttonPaddingTop,
-                                    leading: buttonPaddingLeft,
-                                    bottom: buttonPaddingBottom,
-                                    trailing: buttonPaddingRight
-                                )
-                                button.configuration = updatedConfig
-                            }
-                        }
-                    }.resume()
-                } else {
-                    buttonConfig.title = properties["text"] as? String
-                    buttonConfig.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-                        var outgoing = incoming
-                        outgoing.font = .systemFont(ofSize: CGFloat(properties["font_size"] as? Int ?? 18))
-                        outgoing.foregroundColor = UIColor(hex: properties["color"] as? String ?? "#1E90FF")
-                        return outgoing
-                    }
-                    button.configuration = buttonConfig
-                }
-
-                // Apply background color
-                if let backgroundColor = properties["backgroundColor"] as? String {
-                    button.backgroundColor = UIColor(hex: backgroundColor)
-                }
-
-                // Apply border radius
-                if let borderRadius = properties["borderRadius"] as? Int {
-                    button.layer.cornerRadius = CGFloat(borderRadius)
-                    button.clipsToBounds = true
-                }
-
                 let action = properties["action"] as? String
                 let event = properties["event"] as? String
                 let target = properties["target"] as? String
@@ -210,140 +136,92 @@ class BDUIRenderer {
                     if action == "toggle", let target = target, let targetView = self?.viewMap[target] as? UIButton {
                         targetView.isEnabled.toggle()
                     } else if action == "request", let event = event {
-                        self?.eventHandler?(action!, event)
+                        eventHandler(action!, event)
                     } else if action == "webview" {
-                        self?.eventHandler?(action!, properties["uri"] as? String)
+                        eventHandler(action!, properties["uri"] as? String)
                     }
                 }, for: .touchUpInside)
                 button.translatesAutoresizingMaskIntoConstraints = false
 
+                // Add the button to the rootContainer if bottomAligned, otherwise to the current container
+                let isBottomAligned = properties["bottomAligned"] as? Bool ?? false
+                let parentContainer = isBottomAligned ? (self.rootContainer ?? container) : container
+                parentContainer.addSubview(button)
+
                 if let target = target {
-                    viewMap[target] = button
+                    self.viewMap[target] = button
                 }
 
                 let paddingTop = CGFloat(properties["paddingTop"] as? Int ?? 0)
-                let bottomAligned = properties["bottomAligned"] as? Bool ?? false
-                let fullWidth = properties["fullWidth"] as? Bool ?? false
-                let marginLeft = CGFloat(properties["marginLeft"] as? Int ?? 0)
-                let marginRight = CGFloat(properties["marginRight"] as? Int ?? 0)
-                let width = CGFloat(properties["width"] as? Int ?? 200)
 
-                if bottomAligned && container === self.view {
-                    bottomAlignedButton = button
-                    bottomAlignedButtonProperties = (fullWidth: fullWidth, marginLeft: marginLeft, marginRight: marginRight, width: width)
+                if isBottomAligned {
+                    // Pin the button to the bottom of the root container
+                    let bottomAnchor = parentContainer.safeAreaLayoutGuide.bottomAnchor
+                    NSLayoutConstraint.activate([
+                        button.leadingAnchor.constraint(equalTo: parentContainer.leadingAnchor, constant: 20),
+                        button.trailingAnchor.constraint(equalTo: parentContainer.trailingAnchor, constant: -20),
+                        button.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20),
+                        button.heightAnchor.constraint(equalToConstant: 50)
+                    ])
                 } else {
-                    if paddingTop > 0 {
-                        let spacer = UIView()
-                        stackView.addArrangedSubview(spacer)
-                        spacer.heightAnchor.constraint(equalToConstant: paddingTop).isActive = true
-                    }
-
-                    // Wrap the button in a container to apply margins
-                    let buttonContainer = UIView()
-                    buttonContainer.translatesAutoresizingMaskIntoConstraints = false
-                    buttonContainer.addSubview(button)
-                    stackView.addArrangedSubview(buttonContainer)
-
-                    if fullWidth {
-                        // Stretch the button to fill the container width, minus margins
-                        NSLayoutConstraint.activate([
-                            button.leadingAnchor.constraint(equalTo: buttonContainer.leadingAnchor),
-                            button.trailingAnchor.constraint(equalTo: buttonContainer.trailingAnchor),
-                            button.topAnchor.constraint(equalTo: buttonContainer.topAnchor),
-                            button.bottomAnchor.constraint(equalTo: buttonContainer.bottomAnchor),
-                            buttonContainer.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: marginLeft),
-                            buttonContainer.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -marginRight)
-                        ])
-                    } else {
-                        // Center the button with a fixed width
-                        NSLayoutConstraint.activate([
-                            button.centerXAnchor.constraint(equalTo: buttonContainer.centerXAnchor),
-                            button.topAnchor.constraint(equalTo: buttonContainer.topAnchor),
-                            button.bottomAnchor.constraint(equalTo: buttonContainer.bottomAnchor),
-                            button.widthAnchor.constraint(equalToConstant: width),
-                            buttonContainer.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: marginLeft),
-                            buttonContainer.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -marginRight)
-                        ])
-                    }
+                    // Stack the button as part of the normal flow
+                    let topAnchor = lastView?.bottomAnchor ?? (container === self.view ? container.safeAreaLayoutGuide.topAnchor : container.topAnchor)
+                    NSLayoutConstraint.activate([
+                        button.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 20),
+                        button.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -20),
+                        button.topAnchor.constraint(equalTo: topAnchor, constant: paddingTop),
+                        button.heightAnchor.constraint(equalToConstant: 50)
+                    ])
+                    lastView = button
                 }
 
             case "image":
                 let imageView = UIImageView()
-                imageView.backgroundColor = .lightGray // Visual placeholder while loading
                 if let uri = properties["uri"] as? String, let url = URL(string: uri) {
-                    URLSession.shared.dataTask(with: url) { data, response, error in
-                        if let error = error {
-                            print("Error loading image: \(error.localizedDescription)")
-                            DispatchQueue.main.async {
-                                imageView.backgroundColor = .red // Indicate failure
-                            }
-                            return
-                        }
+                    URLSession.shared.dataTask(with: url) { data, _, _ in
                         if let data = data, let image = UIImage(data: data) {
                             DispatchQueue.main.async {
                                 imageView.image = image
-                                imageView.backgroundColor = nil // Clear placeholder
                             }
                         }
                     }.resume()
-                } else {
-                    print("Invalid image URI: \(properties["uri"] ?? "none")")
-                    imageView.backgroundColor = .red // Indicate invalid URI
                 }
                 imageView.contentMode = .scaleAspectFit
                 imageView.translatesAutoresizingMaskIntoConstraints = false
-
-                // Handle margins
-                let marginTop = CGFloat(properties["marginTop"] as? Int ?? 0)
-                let marginBottom = CGFloat(properties["marginBottom"] as? Int ?? 0)
-                let marginLeft = CGFloat(properties["marginLeft"] as? Int ?? 0)
-                let marginRight = CGFloat(properties["marginRight"] as? Int ?? 0)
-
-                let paddingTop = CGFloat(properties["paddingTop"] as? Int ?? 0)
-
-                // Add top margin/padding
-                if marginTop > 0 || paddingTop > 0 {
-                    let spacer = UIView()
-                    stackView.addArrangedSubview(spacer)
-                    spacer.heightAnchor.constraint(equalToConstant: marginTop + paddingTop).isActive = true
-                }
-
-                // Wrap the image view in a container to apply horizontal margins
-                let imageContainer = UIView()
-                imageContainer.translatesAutoresizingMaskIntoConstraints = false
-                imageContainer.addSubview(imageView)
-                stackView.addArrangedSubview(imageContainer)
+                container.addSubview(imageView)
 
                 let width = CGFloat(properties["width"] as? Int ?? 100)
                 let height = CGFloat(properties["height"] as? Int ?? 50)
+                let paddingTop = CGFloat(properties["paddingTop"] as? Int ?? 0)
+                let marginBottom = CGFloat(properties["marginBottom"] as? Int ?? 0)
+                let topAnchor = lastView?.bottomAnchor ?? (container === self.view ? container.safeAreaLayoutGuide.topAnchor : container.topAnchor)
                 NSLayoutConstraint.activate([
-                    imageView.centerXAnchor.constraint(equalTo: imageContainer.centerXAnchor),
-                    imageView.topAnchor.constraint(equalTo: imageContainer.topAnchor),
-                    imageView.bottomAnchor.constraint(equalTo: imageContainer.bottomAnchor),
+                    imageView.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+                    imageView.topAnchor.constraint(equalTo: topAnchor, constant: paddingTop + marginBottom),
                     imageView.widthAnchor.constraint(equalToConstant: width),
-                    imageView.heightAnchor.constraint(equalToConstant: height),
-                    imageContainer.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: marginLeft),
-                    imageContainer.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -marginRight)
+                    imageView.heightAnchor.constraint(equalToConstant: height)
                 ])
 
-                // Add bottom margin
-                if marginBottom > 0 {
-                    let spacer = UIView()
-                    stackView.addArrangedSubview(spacer)
-                    spacer.heightAnchor.constraint(equalToConstant: marginBottom).isActive = true
-                }
+                lastView = imageView
 
             case "checkbox":
-                // Create a container for the checkbox and label
-                let checkboxContainer = UIView()
-                checkboxContainer.translatesAutoresizingMaskIntoConstraints = false
+                let checkbox = UIButton(type: .system)
+                let isChecked = properties["checked"] as? Bool ?? false
+                checkbox.setImage(UIImage(systemName: isChecked ? "checkmark.square" : "square"), for: .normal)
+                checkbox.tintColor = UIColor(hex: properties["color"] as? String ?? "#000000")
+                let label = UILabel()
+                label.text = properties["label"] as? String
+                label.font = .systemFont(ofSize: CGFloat(properties["font_size"] as? Int ?? 14))
+                label.textColor = .black
+                label.numberOfLines = 0
+                label.translatesAutoresizingMaskIntoConstraints = false
 
-                // Create the checkbox (using a UIButton for simplicity)
-                let checkbox = UIButton(type: .custom)
-                let checked = properties["checked"] as? Bool ?? false
-                checkbox.setImage(UIImage(systemName: checked ? "checkmark.square" : "square"), for: .normal)
-                checkbox.tintColor = .systemBlue
-                checkbox.translatesAutoresizingMaskIntoConstraints = false
+                let stack = UIStackView(arrangedSubviews: [checkbox, label])
+                stack.axis = .horizontal
+                stack.spacing = 8
+                stack.translatesAutoresizingMaskIntoConstraints = false
+                container.addSubview(stack)
+
                 checkbox.addAction(UIAction { [weak self] _ in
                     let isChecked = checkbox.image(for: .normal) == UIImage(systemName: "checkmark.square")
                     checkbox.setImage(UIImage(systemName: isChecked ? "square" : "checkmark.square"), for: .normal)
@@ -352,95 +230,44 @@ class BDUIRenderer {
                        let target = properties["target"] as? String,
                        let targetView = self?.viewMap[target] as? UIButton {
                         targetView.isEnabled = !isChecked
+                    } else if let event = properties["event"] as? String {
+                        self?.eventHandler?("request", event)
                     }
                 }, for: .touchUpInside)
 
-                // Create the label
-                let label = UILabel()
-                label.text = properties["label"] as? String
-                label.font = .systemFont(ofSize: CGFloat(properties["font_size"] as? Int ?? 16))
-                label.textColor = UIColor(hex: properties["color"] as? String ?? "#000000")
-                label.numberOfLines = 0
-                label.translatesAutoresizingMaskIntoConstraints = false
-
-                checkboxContainer.addSubview(checkbox)
-                checkboxContainer.addSubview(label)
-
-                // Handle margins
-                let marginTop = CGFloat(properties["marginTop"] as? Int ?? 0)
-                let marginBottom = CGFloat(properties["marginBottom"] as? Int ?? 0)
-                let marginLeft = CGFloat(properties["marginLeft"] as? Int ?? 0)
-                let marginRight = CGFloat(properties["marginRight"] as? Int ?? 0)
-
-                let paddingTop = CGFloat(properties["paddingTop"] as? Int ?? 0)
-
-                // Add top margin/padding
-                if marginTop > 0 || paddingTop > 0 {
-                    let spacer = UIView()
-                    stackView.addArrangedSubview(spacer)
-                    spacer.heightAnchor.constraint(equalToConstant: marginTop + paddingTop).isActive = true
-                }
-
-                stackView.addArrangedSubview(checkboxContainer)
-
-                // Layout the checkbox and label
+//                let paddingTop = CGFloat(properties["paddingTop"] as? Int ?? 0)
+                let paddingTop = 0
+                let topAnchor = lastView?.bottomAnchor ?? (container === self.view ? container.safeAreaLayoutGuide.topAnchor : container.topAnchor)
                 NSLayoutConstraint.activate([
-                    checkbox.leadingAnchor.constraint(equalTo: checkboxContainer.leadingAnchor),
-                    checkbox.centerYAnchor.constraint(equalTo: checkboxContainer.centerYAnchor),
-                    checkbox.widthAnchor.constraint(equalToConstant: 24),
-                    checkbox.heightAnchor.constraint(equalToConstant: 24),
-
-                    label.leadingAnchor.constraint(equalTo: checkbox.trailingAnchor, constant: 8),
-                    label.trailingAnchor.constraint(equalTo: checkboxContainer.trailingAnchor),
-                    label.topAnchor.constraint(equalTo: checkboxContainer.topAnchor),
-                    label.bottomAnchor.constraint(equalTo: checkboxContainer.bottomAnchor),
-
-                    checkboxContainer.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: marginLeft),
-                    checkboxContainer.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -marginRight)
+                    stack.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 20),
+                    stack.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -20),
+                    stack.topAnchor.constraint(equalTo: topAnchor, constant: 0)
                 ])
 
-                // Add bottom margin
-                if marginBottom > 0 {
-                    let spacer = UIView()
-                    stackView.addArrangedSubview(spacer)
-                    spacer.heightAnchor.constraint(equalToConstant: marginBottom).isActive = true
-                }
+                lastView = stack
 
             default:
                 break
             }
         }
 
-        // Handle bottom-aligned button
-        if let button = bottomAlignedButton, let props = bottomAlignedButtonProperties {
-            // Remove the button from the stack view if it was added
-            stackView.arrangedSubviews.first(where: { $0 === button })?.removeFromSuperview()
-            
-            // Add the button directly to the container and pin to the bottom
-            container.addSubview(button)
-            
-            if props.fullWidth {
-                // Stretch the button to fill the container width, minus margins
-                NSLayoutConstraint.activate([
-                    button.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: props.marginLeft),
-                    button.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -props.marginRight),
-                    button.bottomAnchor.constraint(equalTo: container.safeAreaLayoutGuide.bottomAnchor, constant: -20)
-                ])
-            } else {
-                // Center the button with a fixed width
-                NSLayoutConstraint.activate([
-                    button.centerXAnchor.constraint(equalTo: container.centerXAnchor),
-                    button.bottomAnchor.constraint(equalTo: container.safeAreaLayoutGuide.bottomAnchor, constant: -20),
-                    button.widthAnchor.constraint(equalToConstant: props.width)
-                ])
-            }
-
-            // Add a spacer to the stack view to push other content up
-            let spacer = UIView()
-            stackView.addArrangedSubview(spacer)
+        // Ensure the last view doesn't stretch beyond the container's bottom
+        if let lastView = lastView {
+            let bottomAnchor = container === self.view ? container.safeAreaLayoutGuide.bottomAnchor : container.bottomAnchor
+            NSLayoutConstraint.activate([
+                lastView.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor)
+            ])
         }
     }
+
+//    private var view: UIView?
+
+
 }
+
+//private struct AssociatedKeys {
+//    static var telNumber = "telNumber"
+//}
 
 extension UIColor {
     convenience init(hex: String) {
@@ -472,3 +299,14 @@ extension NSTextAlignment {
         }
     }
 }
+
+//extension NSTextAlignment {
+//    init(from string: String) {
+//        switch string.lowercased() {
+//        case "center": return .center
+//        case "right": return .right
+//        default: return .left
+//        }
+//    }
+//}
+
