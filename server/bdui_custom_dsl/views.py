@@ -73,92 +73,6 @@ def build_screen(flow: str, state: str) -> Screen:
 				)
 			)
 
-		elif state == "services0":
-			main_container.add_child(Text("Доступные услуги", font_size=22, bold=True, alignment="center"))
-			main_container.add_child(Text("Выберите услугу для продолжения", font_size=16, alignment="center", padding_top=10))
-
-			# Service 1 Card
-			main_container.add_child(
-				Container(orientation="vertical", padding_top=20).add_child(
-					Container(
-						orientation="horizontal",
-						background_color="#F5F6FA",
-						border_radius=10,
-						shadow_opacity=0.1,
-						shadow_radius=5,
-						shadow_offset_x=0,
-						shadow_offset_y=2,
-						padding=15,
-						margin_left=20,
-						margin_right=20
-					).add_child(
-						Image(uri="https://wowxoxo.github.io/coolapp-auth-form/profile.png", width=24, height=24)
-					).add_child(
-						Container(
-							orientation="horizontal",
-							padding_left=10,
-							padding_right=10
-						).add_child(
-							Text("Услуга №1", font_size=16, bold=True, color="#000000")
-						).add_child(
-							Text("Доступен без дополнительных условий", font_size=14, color="#666666")
-						)
-					).add_child(
-						Image(uri="https://wowxoxo.github.io/coolapp-auth-form/arrow-right.png", width=24, height=24)
-					).add_child(
-						Button(
-							text="",  # Invisible button overlay
-							action="request",
-							event="select_service1",
-							# width=Int.max,
-							# height=Int.max,
-							background_color="#00000000"  # Transparent
-						)
-					)
-				)
-			)
-
-			# Service 2 Card
-			main_container.add_child(
-				Container(orientation="vertical", padding_top=10).add_child(
-					Container(
-						orientation="horizontal",
-						background_color="#F5F6FA",
-						border_radius=10,
-						shadow_opacity=0.1,
-						shadow_radius=5,
-						shadow_offset_x=0,
-						shadow_offset_y=2,
-						padding=15,
-						margin_left=20,
-						margin_right=20
-					).add_child(
-						Image(uri="https://wowxoxo.github.io/coolapp-auth-form/briefcase.png", width=24, height=24)
-					).add_child(
-						Container(
-							orientation="vertical",
-							padding_left=10,
-							padding_right=10
-						).add_child(
-							Text("Услуга №2", font_size=16, bold=True, color="#000000")
-						).add_child(
-							Text("Доступен ограниченным предпринимателям", font_size=14, color="#666666")
-						)
-					).add_child(
-						Image(uri="https://wowxoxo.github.io/coolapp-auth-form/arrow-right.png", width=24, height=24)
-					).add_child(
-						Button(
-							text="",
-							action="request",
-							event="select_service2",
-							# width=Int.max,
-							# height=Int.max,
-							background_color="#00000000"
-						)
-					)
-				)
-			)
-				
 		elif state == "not_enough_rights":
 			main_container.add_child(Text("Недостаточно прав", font_size=22, bold=True))
 			main_container.add_child(Text("Невозможно продолжить работу", font_size=16))
@@ -221,51 +135,35 @@ def build_screen(flow: str, state: str) -> Screen:
 			)
 		elif state == "point-details":
 			main_container.add_child(Text("Дополнительный международный офис «Прайм» АКБ «ФОРА-БАНК»", font_size=22, bold=True))
+			# main_container.add_child(
+			# 	Container(orientation="vertical", padding_top=10).add_child(
+			# 		Text("Адрес", font_size=16, bold=True)
+			# 	)
+			# )
 			main_container.add_child(
 				Container(orientation="vertical", padding_top=10).add_child(
 					Text("Адрес", font_size=16, bold=True)
-				)
-			)
-			main_container.add_child(
-				Container(orientation="vertical", padding_top=5).add_child(
-					Text("119071, Москва регион, Москва город, Ленинский проспект улица, 15а дом, д. 15а", font_size=14)
-				)
-			)
-			main_container.add_child(
-				Container(orientation="vertical", padding_top=10).add_child(
-					Text("Контакты", font_size=16, bold=True)
-				)
-			)
-			main_container.add_child(
-				Container(orientation="vertical", padding_top=5).add_child(
-					# Text("7 863 438-28-00", font_size=14)
+				).add_child(
+					Text("119071, Москва регион, Москва город, Ленинский проспект улица, д. 15а", font_size=14, padding_top=5)
+				).add_child(
+					Text("Контакты", font_size=16, bold=True, padding_top=10)
+				).add_child(
 					Text(
 						text="7 863 438-28-00",
 						font_size=14,
 						color="#007AFF",
 						action="tel",
-						tel="78634382800"
+						tel="78634382800",
+						padding_top=5
 					)
-				)
-			)
-			main_container.add_child(
-				Container(orientation="vertical", padding_top=10).add_child(
-					Text("Режим работы", font_size=16, bold=True)
-				)
-			)
-			main_container.add_child(
-				Container(orientation="vertical", padding_top=5).add_child(
-					Text("В будние дни с 10:00 до 17:00, в выходные с 10:00 до 13:00", font_size=14)
-				)
-			)
-			main_container.add_child(
-				Container(orientation="vertical", padding_top=10).add_child(
-					Text("Особенности услуги", font_size=16, bold=True)
-				)
-			)
-			main_container.add_child(
-				Container(orientation="vertical", padding_top=5).add_child(
-					Text("• Обслуживание физических лиц\n• Регистрация учётной записи\n• Регистрация биометрии", font_size=14)
+				).add_child(
+					Text("Режим работы", font_size=16, bold=True, padding_top=10)
+				).add_child(
+					Text("В будние дни с 10:00 до 17:00, в выходные с 10:00 до 13:00", font_size=14, padding_top=5)
+				).add_child(
+					Text("Особенности услуги", font_size=16, bold=True, padding_top=10)
+				).add_child(
+					Text("• Обслуживание физических лиц\n• Регистрация учётной записи\n• Регистрация биометрии", font_size=14, padding_top=5)
 				)
 			)
 			main_container.add_child(
@@ -276,16 +174,22 @@ def build_screen(flow: str, state: str) -> Screen:
 
 	elif flow == "service-two":
 		if state == "temporarily-unavailable":
-			main_container.add_child(Text("Услуга временно недоступна", font_size=22, bold=True))
-			main_container.add_child(Text("Попробуйте снова позже", font_size=16))
+			main_container.add_child(
+				Image(uri="https://wowxoxo.github.io/coolapp-auth-form/phone-error.png", width=295, height=184, margin_top=20, margin_bottom=20)
+			)
+			main_container.add_child(Text("Услуга временно недоступна", font_size=22, bold=True, alignment="center", padding_top=20))
+			main_container.add_child(Text("Попробуйте снова позже", font_size=16, alignment="center", padding_top=10))
 			main_container.add_child(
 				Container(orientation="vertical", padding_top=20).add_child(
 					Button(text="Попробовать снова", color="#ffffff", action="request", event="retry", bottomAligned=True)
 				)
 			)
 		elif state == "unavailable":
-			main_container.add_child(Text("Услуга недоступна", font_size=22, bold=True))
-			main_container.add_child(Text("Данная услуга недоступна в вашем регионе", font_size=16))
+			main_container.add_child(
+				Image(uri="https://wowxoxo.github.io/coolapp-auth-form/phone-error.png", width=295, height=184, margin_top=20, margin_bottom=20)
+			)
+			main_container.add_child(Text("Услуга недоступна", font_size=22, bold=True, alignment="center", padding_top=20))
+			main_container.add_child(Text("Данная услуга недоступна в вашем регионе", font_size=16, alignment="center", padding_top=10))
 		elif state == "get":
 			main_container.add_child(Text("Получить услугу №2", font_size=22, bold=True))
 			main_container.add_child(Text("Услуга №2: Начало", font_size=16))
@@ -303,48 +207,13 @@ def build_screen(flow: str, state: str) -> Screen:
 				)
 			)
 
-	# FIXME: remove, leave for now for reference
-	elif flow == "service-three0":
-		if state == "docs-accept":
-			main_container.add_child(
-				Image(uri="https://wowxoxo.github.io/coolapp-auth-form/doc-with-glasses.png", width=295, height=184, margin_bottom=15)
-			)
-			main_container.add_child(Text("Принятие условий", font_size=22, bold=True))
-			main_container.add_child(Text("Пожалуйста, примите условия для продолжения", font_size=16))
-			main_container.add_child(
-				Container(orientation="vertical", padding_top=20).add_child(
-					Checkbox(label="Я принимаю условия", action="toggle", target="continue-button")
-				)
-			)
-			main_container.add_child(
-				Container(orientation="vertical", padding_top=20).add_child(
-					Button(
-						text="Продолжить",
-						action="request",
-						event="accept-docs",
-						target="continue-button",
-						background_color="#1E90FF",
-						color="#ffffff",
-						disabled=True
-					)
-				)
-			)
-		elif state == "details":
-			main_container.add_child(Text("Услуга №3", font_size=22, bold=True))
-			main_container.add_child(Text("Детали услуги №3", font_size=16))
-			main_container.add_child(
-				Container(orientation="vertical", padding_top=20).add_child(
-					Button(text="Продолжить", action="request", event="continue")
-				)
-			)
-
 	elif flow == "service-three":
 		if state == "intro":
 			main_container.add_child(
-				Image(uri="https://via.placeholder.com/80x80.png?text=Doc", width=80, height=80, margin_bottom=20)
+				Image(uri="https://wowxoxo.github.io/coolapp-auth-form/get-doc.png", width=295, height=184, margin_top=20, margin_bottom=20)
 			)
 			main_container.add_child(
-				Text("Получить услугу №3", font_size=24, bold=True, color="#000000", alignment="center")
+				Text("Получить услугу №3", font_size=24, bold=True, color="#000000", alignment="center", padding_top=20)
 			)
 			main_container.add_child(
 				Text(
@@ -371,10 +240,10 @@ def build_screen(flow: str, state: str) -> Screen:
 			)
 		elif state == "docs-accept":
 			main_container.add_child(
-				Image(uri="https://via.placeholder.com/80x80.png?text=Docs", width=80, height=80, margin_bottom=20)
+				Image(uri="https://wowxoxo.github.io/coolapp-auth-form/doc-with-glasses.png", width=295, height=184, margin_top=20, margin_bottom=20)
 			)
 			main_container.add_child(
-				Text("Ознакомьтесь с условиями", font_size=24, bold=True, color="#000000", alignment="center")
+				Text("Ознакомьтесь с условиями", font_size=24, bold=True, color="#000000", alignment="center", padding_top=20)
 			)
 			main_container.add_child(
 				Text(
@@ -406,10 +275,10 @@ def build_screen(flow: str, state: str) -> Screen:
 			)
 		elif state == "final":
 			main_container.add_child(
-				Image(uri="https://via.placeholder.com/80x80.png?text=Check", width=80, height=80, margin_bottom=20)
+				Image(uri="https://wowxoxo.github.io/coolapp-auth-form/green-doc.png", width=295, height=184, margin_top=20, margin_bottom=20)
 			)
 			main_container.add_child(
-				Text("Услуга получена", font_size=24, bold=True, color="#000000", alignment="center")
+				Text("Услуга получена", font_size=24, bold=True, color="#000000", alignment="center", padding_top=20)
 			)
 			main_container.add_child(
 				Text("Теперь услуга работает для вас", font_size=16, color="#666666", alignment="center", padding_top=10)
